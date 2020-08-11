@@ -587,6 +587,7 @@ class SurveySubmission(SequentialTaskSet):
             url=url,
             headers=headers,
             params=params,
+            name='/dataserver2/logon.nti.password'
         )
 
     @task()
