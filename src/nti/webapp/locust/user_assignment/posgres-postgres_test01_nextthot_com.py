@@ -2505,7 +2505,6 @@ class SurveySubmission(SequentialTaskSet):
 
         values = self.response.json()
         self.version = values['version']
-        print(self.version)
 
     @task()
     def task_000126_GET_dataserver2_Objects_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_2693BEA250B5854249BB137426CADB7EDF176C749E6A11B60BC1CBE821CD89BA_0083(self):
@@ -2604,52 +2603,52 @@ class SurveySubmission(SequentialTaskSet):
         }
 
         data = {'version': self.version}
-
+        data_str = json.dumps(data)
         self.response = self.client.request(
             method='POST',
             url=url,
             headers=headers,
-            data=data,
+            data=data_str,
             name='/dataserver2/%2B%2Betc%2B%2Bhostsites/sfdd0438bbad141b59137b0e12c47d7ed/%2B%2Betc%2B%2Bsite/Courses/DefaultAPIImported/ctat-0000%20%281%29/AssignmentAttemptMetadata/stress.tester{self.user_id}/tag%3Anextthought.com%2C2011-10%3ANTI-NAQ-2693BEA250B5854249BB137426CADB7EDF176C749E6A11B60BC1CBE821CD89BA_0083/%40%40Commence'
         )
 
-    # @task()
-    # def task_000130_GET_app_resources_images_8982edf3b26c6e0e50972121db74da1a_png(self):
-    #     url = '' + '/app/resources/images/8982edf3b26c6e0e50972121db74da1a.png'
-    #
-    #     headers = {
-    #         'Accept': 'image/png,image/svg+xml,image/*;q=0.8,video/*;q=0.8,*/*;q=0.5',
-    #         'Connection': 'keep-alive',
-    #         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15',
-    #         'Accept-Language': 'en-us',
-    #         'Referer': '' + '/app/course/julie.zhu%40nextthought.com-OID-0x071a%3A5573657273%3AU1j0YSfyWD7/assignments/NTI-NAQ-2693BEA250B5854249BB137426CADB7EDF176C749E6A11B60BC1CBE821CD89BA_0083/',
-    #         'Accept-Encoding': 'gzip, deflate, br',
-    #     }
-    #
-    #     self.response = self.client.request(
-    #         method='GET',
-    #         url=url,
-    #         headers=headers,
-    #     )
-    #
-    # @task()
-    # def task_000131_GET_app_resources_images_28c1ffce03b65d9f19f7a008e3628c5c_png(self):
-    #     url = '' + '/app/resources/images/28c1ffce03b65d9f19f7a008e3628c5c.png'
-    #
-    #     headers = {
-    #         'Accept': 'image/png,image/svg+xml,image/*;q=0.8,video/*;q=0.8,*/*;q=0.5',
-    #         'Connection': 'keep-alive',
-    #         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15',
-    #         'Accept-Language': 'en-us',
-    #         'Referer': '' + '/app/course/julie.zhu%40nextthought.com-OID-0x071a%3A5573657273%3AU1j0YSfyWD7/assignments/NTI-NAQ-2693BEA250B5854249BB137426CADB7EDF176C749E6A11B60BC1CBE821CD89BA_0083/',
-    #         'Accept-Encoding': 'gzip, deflate, br',
-    #     }
-    #
-    #     self.response = self.client.request(
-    #         method='GET',
-    #         url=url,
-    #         headers=headers,
-    #     )
+    @task()
+    def task_000130_GET_app_resources_images_8982edf3b26c6e0e50972121db74da1a_png(self):
+        url = '' + '/app/resources/images/8982edf3b26c6e0e50972121db74da1a.png'
+
+        headers = {
+            'Accept': 'image/png,image/svg+xml,image/*;q=0.8,video/*;q=0.8,*/*;q=0.5',
+            'Connection': 'keep-alive',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15',
+            'Accept-Language': 'en-us',
+            'Referer': '' + '/app/course/julie.zhu%40nextthought.com-OID-0x071a%3A5573657273%3AU1j0YSfyWD7/assignments/NTI-NAQ-2693BEA250B5854249BB137426CADB7EDF176C749E6A11B60BC1CBE821CD89BA_0083/',
+            'Accept-Encoding': 'gzip, deflate, br',
+        }
+
+        self.response = self.client.request(
+            method='GET',
+            url=url,
+            headers=headers,
+        )
+
+    @task()
+    def task_000131_GET_app_resources_images_28c1ffce03b65d9f19f7a008e3628c5c_png(self):
+        url = '' + '/app/resources/images/28c1ffce03b65d9f19f7a008e3628c5c.png'
+
+        headers = {
+            'Accept': 'image/png,image/svg+xml,image/*;q=0.8,video/*;q=0.8,*/*;q=0.5',
+            'Connection': 'keep-alive',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15',
+            'Accept-Language': 'en-us',
+            'Referer': '' + '/app/course/julie.zhu%40nextthought.com-OID-0x071a%3A5573657273%3AU1j0YSfyWD7/assignments/NTI-NAQ-2693BEA250B5854249BB137426CADB7EDF176C749E6A11B60BC1CBE821CD89BA_0083/',
+            'Accept-Encoding': 'gzip, deflate, br',
+        }
+
+        self.response = self.client.request(
+            method='GET',
+            url=url,
+            headers=headers,
+        )
 
     @task()
     def task_000132_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_ctat_0000_20_281_29_AssignmentSavepoints_stress_tester10_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_2693BEA250B5854249BB137426CADB7EDF176C749E6A11B60BC1CBE821CD89BA_0083_Savepoint(self):
@@ -3529,4 +3528,4 @@ class SurveySubmission(SequentialTaskSet):
 
 class WebsiteUser(HttpUser):
     tasks = [SurveySubmission]
-    wait_time = between(2, 8)
+    wait_time = between(5, 15)
