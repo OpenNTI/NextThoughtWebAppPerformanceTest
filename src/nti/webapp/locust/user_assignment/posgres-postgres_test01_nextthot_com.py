@@ -1090,6 +1090,7 @@ class SurveySubmission(SequentialTaskSet):
             method='GET',
             url=url,
             headers=headers,
+            name='/dataserver2/users/stress.tester{self.user_id}'
         )
 
     # @task()
