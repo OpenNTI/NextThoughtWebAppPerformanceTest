@@ -3,7 +3,7 @@
 from locust import HttpUser, TaskSet, task, SequentialTaskSet, between
 import json
 import base64
-USER_CREDENTIALS = list(range(1, 1000))
+USER_CREDENTIALS = list(range(1, 2000))
 
 class UserBehavior(SequentialTaskSet):
     user_id=0
