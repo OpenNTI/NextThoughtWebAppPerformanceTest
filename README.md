@@ -21,8 +21,8 @@ go to: [http://localhost:8089](http://localhost:8089) and specify follow:
 3. target URL for the test to run on
 
 if you are using --step-load flag when starting locust server, you'd need to specify 2 additional params:
-4. --step-users: number of users to spawn during each step
-5. --step-time: amount of time (s) to wait before going to next step
+1. step-users: number of users to spawn during each step
+2. step-time: amount of time (s) to wait before going to next step
 
 ### What tests are available?
 There are 4 types of tests you can run and separated by self explaining folder names
