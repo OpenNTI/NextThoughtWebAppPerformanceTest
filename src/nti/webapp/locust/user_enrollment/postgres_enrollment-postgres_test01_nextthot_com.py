@@ -3,6 +3,8 @@
 from locust import HttpUser, TaskSet, task, SequentialTaskSet, between
 import json
 import base64
+import time
+
 USER_CREDENTIALS = list(range(1, 1000))
 COURSE_NTIIDS = ["tag:nextthought.com,2011-10:NTI-CourseInfo-5954844452914049040_4744481198483187534",
                  "tag:nextthought.com,2011-10:NTI-CourseInfo-8258097998635895426_4744481198244697563",
@@ -2306,6 +2308,8 @@ class UserEnrollment(SequentialTaskSet):
             url=url,
             headers=headers,
         )
+
+        time.sleep(36000)
 
 
 

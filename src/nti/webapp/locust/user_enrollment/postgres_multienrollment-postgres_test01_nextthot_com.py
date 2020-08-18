@@ -6598,7 +6598,7 @@ class UserEnrollment(SequentialTaskSet):
             url=url,
             headers=headers,
         )
-        time.sleep(3600000)
+        time.sleep(36000)
 
 
 class WebsiteUser(HttpUser):

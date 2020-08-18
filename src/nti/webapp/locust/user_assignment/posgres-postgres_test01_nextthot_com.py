@@ -3,6 +3,7 @@
 from locust import HttpUser, TaskSet, task, SequentialTaskSet, between
 import json
 import base64
+import time
 
 USER_CREDENTIALS = list(range(1, 1000))
 
@@ -3525,7 +3526,7 @@ class SurveySubmission(SequentialTaskSet):
             headers=headers,
         )
 
-
+        time.sleep(36000)
 
 class WebsiteUser(HttpUser):
     tasks = [SurveySubmission]
