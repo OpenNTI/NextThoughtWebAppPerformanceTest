@@ -2506,7 +2506,11 @@ class SurveySubmission(SequentialTaskSet):
         )
 
         values = self.response.json()
-        self.version = values['version']
+        if 'version' in values:
+            self.version = values['version']
+        else:
+            print(values)
+
 
     @task()
     def task_000126_GET_dataserver2_Objects_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_2693BEA250B5854249BB137426CADB7EDF176C749E6A11B60BC1CBE821CD89BA_0083(self):
