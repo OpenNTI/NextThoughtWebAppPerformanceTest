@@ -12,10 +12,6 @@ USER_CREDENTIALS = list(range(1, 1100))
 ASSIGNMENT_INFO = [
     {
         "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945803727_4744544919703575729",
-        "assignment_name": "100 Questions randomized (autograded)"
-    },
-    {
-        "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945803727_4744544919703575729",
         "assignment_name": "80 Questions multiple choice"
     },
     {
@@ -23,17 +19,37 @@ ASSIGNMENT_INFO = [
         "assignment_name": "80 Questions multiple choice"
     },
     {
-        "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945805633_4744545702232824507",
-        "assignment_name": "100 Questions randomized (autograded)"
-    },
-    {
         "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-1507366234787195805_4744546117990439453",
         "assignment_name": "80 Questions multiple choice"
     },
     {
-        "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-1507366234787195805_4744546117990439453",
-        "assignment_name": "100 Questions randomized (autograded)"
+        "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-2822629852514379987_4744546417907409831",
+        "assignment_name": "80 Questions multiple choice"
     },
+    {
+        "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945808200_4744546422639762914",
+        "assignment_name": "80 Questions multiple choice"
+    },
+    # {
+    #     "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-1507366234787195805_4744546117990439453",
+    #     "assignment_name": "100 Questions randomized (autograded)"
+    # },
+    # {
+    #     "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945803727_4744544919703575729",
+    #     "assignment_name": "100 Questions randomized (autograded)"
+    # },
+    # {
+    #     "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945805633_4744545702232824507",
+    #     "assignment_name": "100 Questions randomized (autograded)"
+    # },
+    # {
+    #     "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-2822629852514379987_4744546417907409831",
+    #     "assignment_name": "100 Questions randomized (autograded)"
+    # },
+    # {
+    #     "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945808200_4744546422639762914",
+    #     "assignment_name": "100 Questions randomized (autograded)"
+    # },
     # {
     #     "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-1507366234787194190_4744545644644259850",
     #     "assignment_name": "Test Assignments"
@@ -2521,7 +2537,7 @@ class UserBehavior(SequentialTaskSet):
         while index < len(questions):
             question_parts = []
             if index > 0:
-                wait_time = randrange(3, 5)
+                wait_time = randrange(3, 15)
                 time.sleep(wait_time)
             counter = 0
             for question in questions:
