@@ -8,58 +8,39 @@ from random import randrange
 from random import sample
 import time
 
-USER_CREDENTIALS = list(range(1, 1100))
+USER_CREDENTIALS = list(range(1, 1101))
 ASSIGNMENT_INFO = [
+    # {
+    #     "course_uid": "LongAssignCourse4",
+    #     "assignment_name": "80 Questions multiple choice"
+    # },
     {
-        "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945803727_4744544919703575729",
-        "assignment_name": "80 Questions multiple choice"
+        "course_uid": "MASTER-USR",
+        "assignment_name": "Technical Assessment"
     },
     {
-        "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945805633_4744545702232824507",
-        "assignment_name": "80 Questions multiple choice"
+        "course_uid": "MASTER-WEB",
+        "assignment_name": "Technical Assessment"
     },
     {
-        "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-1507366234787195805_4744546117990439453",
-        "assignment_name": "80 Questions multiple choice"
+        "course_uid": "MASTER-MRT",
+        "assignment_name": "Technical Assessment"
     },
     {
-        "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-2822629852514379987_4744546417907409831",
-        "assignment_name": "80 Questions multiple choice"
+        "course_uid": "MASTER-DA",
+        "assignment_name": "Technical Assessment"
     },
     {
-        "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945808200_4744546422639762914",
-        "assignment_name": "80 Questions multiple choice"
+        "course_uid": "120-MM",
+        "assignment_name": "Technical Assessment"
     },
-    # {
-    #     "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-1507366234787195805_4744546117990439453",
-    #     "assignment_name": "100 Questions randomized (autograded)"
-    # },
-    # {
-    #     "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945803727_4744544919703575729",
-    #     "assignment_name": "100 Questions randomized (autograded)"
-    # },
-    # {
-    #     "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945805633_4744545702232824507",
-    #     "assignment_name": "100 Questions randomized (autograded)"
-    # },
-    # {
-    #     "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-2822629852514379987_4744546417907409831",
-    #     "assignment_name": "100 Questions randomized (autograded)"
-    # },
-    # {
-    #     "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-8201875887945808200_4744546422639762914",
-    #     "assignment_name": "100 Questions randomized (autograded)"
-    # },
-    # {
-    #     "course_ntiid": "tag:nextthought.com,2011-10:NTI-CourseInfo-1507366234787194190_4744545644644259850",
-    #     "assignment_name": "Test Assignments"
-    # }
 ]
 
 class UserBehavior(SequentialTaskSet):
     user_id = 0
     version = None
     course_ntiid = None
+    course_uid = None
     course_instance_link = None
     overview_summary_link = None
     overview_content_link = None
@@ -72,14 +53,15 @@ class UserBehavior(SequentialTaskSet):
     assignment_parts = None
     final_answer = None
 
+
     def on_start(self):
         index_val = USER_CREDENTIALS.pop()
         index = index_val % len(ASSIGNMENT_INFO)
         print(index_val, index)
         self.user_id = f'stress.tester{index_val}'
-        self.course_ntiid = ASSIGNMENT_INFO[index]['course_ntiid']
+        self.course_uid = ASSIGNMENT_INFO[index]['course_uid']
         self.assignment_name = ASSIGNMENT_INFO[index]['assignment_name']
-        print(f'starting {self.user_id} {self.course_ntiid} {self.assignment_name}')
+        print(f'starting {self.user_id} {self.course_uid} {self.assignment_name}')
 
     @task()
     def task_000006_GET_dataserver2_logon_nti_password(self):
@@ -910,12 +892,13 @@ class UserBehavior(SequentialTaskSet):
         if 'Items' in values:
             items = values["Items"]
             for item in items:
-                if item["CatalogEntry"]["NTIID"] == self.course_ntiid:
+                if item["CatalogEntry"]["ProviderUniqueID"] == self.course_uid:
+                    self.course_ntiid = item["CatalogEntry"]["NTIID"]
                     links = item["CatalogEntry"]["Links"]
                     for link in links:
                         if link['rel'] == "CourseInstance":
                             self.course_instance_link = link['href']
-        print(self.course_instance_link)
+        print(self.course_instance_link, self.course_ntiid)
 
     @task()
     def task_000075_GET_dataserver2_users_stress_tester1_Communities_Communities(self):
@@ -1378,7 +1361,7 @@ class UserBehavior(SequentialTaskSet):
 
     @task()
     def task_000100_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_Long_Assign_Course_40_40AssignmentSummaryByOutlineNode(self):
-        url = f'{self.course_instance_link}/%40%40AssignmentSummaryByOutlineNode'
+        url = f'{self.course_instance_link}/@@AssignmentSummaryByOutlineNode'
         url = urllib.parse.quote(url)
 
         headers = {
@@ -2182,12 +2165,13 @@ class UserBehavior(SequentialTaskSet):
         else:
             print(values)
 
-        self.assignment_parts = values['parts'][0]
+        # if 'parts' in values:
+        #     self.assignment_parts = values['parts'][0]
         print(self.version)
 
     @task()
     def task_000135_POST_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_Long_Assign_Course_AssignmentAttemptMetadata_stress_tester1_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_4A6B95A017CC122F411DEF2ED648F575A82431DA021DE5F652EFE62ED8DB92ED_0084_40_40Commence(self):
-        url = '' + f'{self.course_instance_link}/AssignmentAttemptMetadata/{self.user_id}/{self.assignment_target_ntiid}/%40%40Commence'
+        url = f'{self.course_instance_link}/AssignmentAttemptMetadata/{self.user_id}/{self.assignment_target_ntiid}/@@Commence'
         url = self.commence_link if self.commence_link is not None else urllib.parse.quote(url)
         print(url)
         headers = {
@@ -2220,42 +2204,114 @@ class UserBehavior(SequentialTaskSet):
             data=data,
             name=url.replace(self.user_id, 'user')
         )
+        values = self.response.json()
+        if 'parts' in values:
+            self.assignment_parts = values['parts'][0]
+        print(self.version)
 
     @task()
-    def task_000136_GET_app_resources_images_sprite_png(self):
-        url = '' + '/app/resources/images/sprite.png'
-        
-        headers = {
-            'Connection': 'keep-alive',
-            'Pragma': 'no-cache',
-            'Cache-Control': 'no-cache',
-            'sec-ch-ua': '"Google Chrome";v="87", " Not;A Brand";v="99", "Chromium";v="87"',
-            'sec-ch-ua-mobile': '?0',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36',
-            'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
-            'Sec-Fetch-Site': 'same-origin',
-            'Sec-Fetch-Mode': 'no-cors',
-            'Sec-Fetch-Dest': 'image',
-            'Referer': '' + '/app/resources/css/legacy.css',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'en-US,en;q=0.9',
-        }
+    def task_000135_1_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_MASTER_WEB_AssignmentAttemptMetadata_stress_tester10_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_CCEC304B1D5A53E0D47E7D0C6F54E2FFC6BDDA27762FA0DDD026BA1B6CF09CD9_0084_UsersCourseAssignmentAttemptMetadataItem_40_40Assignment(
+            self):
+        url = f'{self.metadata_attempts_link}/UsersCourseAssignmentAttemptMetadataItem/%40%40Assignment'
 
-        params = {
-            't': '20201210171430',
+        headers = {
+            'Accept-Encoding': 'gzip, deflate, br',
+            'X-NTI-Client-App': '@nti/web-app',
+            'Connection': 'keep-alive',
+            'X-NTI-Client-Version': '2021.0.0',
+            'Accept': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Safari/605.1.15',
+            'Referer': '/app/course/site.admin.alpha-OID-0x27a5d6%3A5573657273%3AKS4zsTUN79t/lessons/NTI-NTICourseOutlineNode-9007678577205568157_4744547776816629863.0.0/items/NTI-NTIAssignmentRef-F896A60099C754C0D63F8D979BCD00B871343CAD9F5CD1166FC1DD6EB2F51D56_0088',
+            'Accept-Language': 'en-us',
+            'X-Requested-With': 'XMLHttpRequest',
         }
 
         self.response = self.client.request(
             method='GET',
             url=url,
             headers=headers,
-            params=params,
+            name=url.replace(self.user_id, 'user')
         )
+
+    @task()
+    def task_000135_2_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_MASTER_WEB_AssignmentSavepoints_stress_tester10_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_CCEC304B1D5A53E0D47E7D0C6F54E2FFC6BDDA27762FA0DDD026BA1B6CF09CD9_0084_Savepoint(
+            self):
+        url = f"{self.course_instance_link}/AssignmentSavepoints/{self.user_id}/{self.assignment_target_ntiid}/Savepoint"
+        url = self.savepoint_link if self.savepoint_link is not None else url
+        url = urllib.parse.quote(url)
+
+        headers = {
+            'Accept-Encoding': 'gzip, deflate, br',
+            'X-NTI-Client-App': '@nti/web-app',
+            'Connection': 'keep-alive',
+            'X-NTI-Client-Version': '2021.0.0',
+            'Accept': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Safari/605.1.15',
+            'Referer': '/app/course/site.admin.alpha-OID-0x27a5d6%3A5573657273%3AKS4zsTUN79t/lessons/NTI-NTICourseOutlineNode-9007678577205568157_4744547776816629863.0.0/items/NTI-NTIAssignmentRef-F896A60099C754C0D63F8D979BCD00B871343CAD9F5CD1166FC1DD6EB2F51D56_0088',
+            'Accept-Language': 'en-us',
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+
+        self.response = self.client.request(
+            method='GET',
+            url=url,
+            headers=headers,
+            name=url.replace(self.user_id, 'user')
+        )
+
+    @task()
+    def task_000039_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_MASTER_WEB_AssignmentAttemptMetadata_stress_tester10_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_CCEC304B1D5A53E0D47E7D0C6F54E2FFC6BDDA27762FA0DDD026BA1B6CF09CD9_0084_UsersCourseAssignmentAttemptMetadataItem_40_40Assignment(
+            self):
+        url = f'{self.metadata_attempts_link}/UsersCourseAssignmentAttemptMetadataItem/%40%40Assignment'
+
+        headers = {
+            'X-NTI-Client-App': '@nti/web-app',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'en-us',
+            'Accept': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Safari/605.1.15',
+            'Referer': '/app/course/site.admin.alpha-OID-0x27a5d6%3A5573657273%3AKS4zsTUN79t/lessons/NTI-NTICourseOutlineNode-9007678577205568157_4744547776816629863.0.0/items/NTI-NTIAssignmentRef-F896A60099C754C0D63F8D979BCD00B871343CAD9F5CD1166FC1DD6EB2F51D56_0088',
+            'X-NTI-Client-Version': '2021.0.0',
+            'Connection': 'keep-alive',
+        }
+
+        self.response = self.client.request(
+            method='GET',
+            url=url,
+            headers=headers,
+            name=url.replace(self.user_id, 'user')
+        )
+
+    @task()
+    def task_000043_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_MASTER_WEB_AssignmentAttemptMetadata_stress_tester10_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_CCEC304B1D5A53E0D47E7D0C6F54E2FFC6BDDA27762FA0DDD026BA1B6CF09CD9_0084_UsersCourseAssignmentAttemptMetadataItem_40_40TimeRemaining(
+            self):
+        url = f'{self.metadata_attempts_link}/UsersCourseAssignmentAttemptMetadataItem/%40%40TimeRemaining'
+
+        headers = {
+            'Accept-Encoding': 'gzip, deflate, br',
+            'X-NTI-Client-App': '@nti/web-app',
+            'Connection': 'keep-alive',
+            'X-NTI-Client-Version': '2021.0.0',
+            'Accept': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Safari/605.1.15',
+            'Referer': '/app/course/site.admin.alpha-OID-0x27a5d6%3A5573657273%3AKS4zsTUN79t/lessons/NTI-NTICourseOutlineNode-9007678577205568157_4744547776816629863.0.0/items/NTI-NTIAssignmentRef-F896A60099C754C0D63F8D979BCD00B871343CAD9F5CD1166FC1DD6EB2F51D56_0088',
+            'Accept-Language': 'en-us',
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+
+        self.response = self.client.request(
+            method='GET',
+            url=url,
+            headers=headers,
+        )
+
 
     @task()
     def task_000137_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_Long_Assign_Course_AssignmentSavepoints_stress_tester1_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_4A6B95A017CC122F411DEF2ED648F575A82431DA021DE5F652EFE62ED8DB92ED_0084_Savepoint(self):
         url = '' + f'{self.course_instance_link}/AssignmentSavepoints/{self.user_id}/{self.assignment_target_ntiid}/Savepoint'
         url = self.savepoint_link if self.savepoint_link is not None else urllib.parse.quote(url)
+        url = urllib.parse.quote(url)
 
         headers = {
             'Connection': 'keep-alive',
@@ -2400,13 +2456,23 @@ class UserBehavior(SequentialTaskSet):
             'Accept-Language': 'en-US,en;q=0.9',
         }
 
-        data = '''{"MimeType":"application/vnd.nextthought.analytics.batchevents","events":[{"MimeType":"application/vnd.nextthought.analytics.assignmentviewevent","context_path":["tag:nextthought.com,2011-10:admin.user-OID-0x2166c2:5573657273:Pc3MCYfnMkJ","tag:nextthought.com,2011-10:NTI-NTICourseOutlineNode-8201875887945803727_4744544919703575729.0.0","tag:nextthought.com,2011-10:NTI-NTIAssignmentRef-5EA88011AC6C086CEBC92D0B71CB808D5C0F7742E7F22BE595A62977D69D46FF_0088"],"RootContextID":"tag:nextthought.com,2011-10:admin.user-OID-0x2166c2:5573657273:Pc3MCYfnMkJ","timestamp":1611292506.733,"user":"stress.tester1","ResourceId":"tag:nextthought.com,2011-10:NTI-NAQ-4A6B95A017CC122F411DEF2ED648F575A82431DA021DE5F652EFE62ED8DB92ED_0084","Duration":0.001,"ContentId":"tag:nextthought.com,2011-10:NTI-NAQ-4A6B95A017CC122F411DEF2ED648F575A82431DA021DE5F652EFE62ED8DB92ED_0084"}]}'''
-
+        data = {"MimeType":"application/vnd.nextthought.analytics.batchevents",
+                "events":[{"MimeType":"application/vnd.nextthought.analytics.assignmentviewevent",
+                           "context_path":["tag:nextthought.com,2011-10:admin.user-OID-0x2166c2:5573657273:Pc3MCYfnMkJ",
+                                           "tag:nextthought.com,2011-10:NTI-NTICourseOutlineNode-8201875887945803727_4744544919703575729.0.0",
+                                           "tag:nextthought.com,2011-10:NTI-NTIAssignmentRef-5EA88011AC6C086CEBC92D0B71CB808D5C0F7742E7F22BE595A62977D69D46FF_0088"],
+                           "RootContextID":"tag:nextthought.com,2011-10:admin.user-OID-0x2166c2:5573657273:Pc3MCYfnMkJ",
+                           "timestamp":1611292506.733,
+                           "user":self.user_id,
+                           "ResourceId":self.assignment_target_ntiid,
+                           "Duration":0.001,
+                           "ContentId":self.assignment_target_ntiid}]}
+        data_str = json.dumps(data)
         self.response = self.client.request(
             method='POST',
             url=url,
             headers=headers,
-            data=data,
+            data=data_str,
         )
 
     @task()
@@ -2500,8 +2566,10 @@ class UserBehavior(SequentialTaskSet):
 
     @task()
     def task_000156_POST_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_Long_Assign_Course_AssignmentSavepoints_stress_tester1_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_4A6B95A017CC122F411DEF2ED648F575A82431DA021DE5F652EFE62ED8DB92ED_0084_Savepoint(self):
-        # url = '' + f'/dataserver2/%2B%2Betc%2B%2Bhostsites/sfdd0438bbad141b59137b0e12c47d7ed/%2B%2Betc%2B%2Bsite/Courses/DefaultAPIImported/{self.course_identifier}/AssignmentSavepoints/{self.user_id}/tag%3Anextthought.com%2C2011-10%3ANTI-NAQ-4A6B95A017CC122F411DEF2ED648F575A82431DA021DE5F652EFE62ED8DB92ED_0084/Savepoint'
-        url = self.savepoint_link
+        url = '' + f'{self.course_instance_link}/AssignmentSavepoints/{self.user_id}/{self.assignment_target_ntiid}/Savepoint'
+        url = self.savepoint_link if self.savepoint_link is not None else urllib.parse.quote(url)
+        url = urllib.parse.quote(url)
+
         headers = {
             'Connection': 'keep-alive',
             'Content-Length': '31688',
@@ -2525,26 +2593,31 @@ class UserBehavior(SequentialTaskSet):
         }
 
         data = '''{"MimeType":"application/vnd.nextthought.assessment.assignmentsubmission","tags":[],"assignmentId":"tag:nextthought.com,2011-10:NTI-NAQ-4A6B95A017CC122F411DEF2ED648F575A82431DA021DE5F652EFE62ED8DB92ED_0084","parts":[{"MimeType":"application/vnd.nextthought.assessment.questionsetsubmission","NTIID":null,"tags":[],"questionSetId":"tag:nextthought.com,2011-10:NTI-NAQ-2B79751248879E53E45CD1106CA4CFB48E02A3F05E2411B91892FBB04D90D193_0085","questions":[{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-47FC490CC43012E86F18DE556E22EC36421CA9012E4C6D5C0A59F4DAC6857837_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-47FC490CC43012E86F18DE556E22EC36421CA9012E4C6D5C0A59F4DAC6857837_0082","parts":[1],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-67CBF684D1A0BA710E1A4092FBEFF062642F806B6DA570EFE157575B2174453A_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-67CBF684D1A0BA710E1A4092FBEFF062642F806B6DA570EFE157575B2174453A_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-31A14FA9E8D7F38770D4F6D993DB9E0AD3BAA92349A432ADE7C40F8638D1E065_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-31A14FA9E8D7F38770D4F6D993DB9E0AD3BAA92349A432ADE7C40F8638D1E065_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-33B6A75D4745331E203373F7EA7E33F1AB4AB32C5EB5E46C6A88C4ABEF190117_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-33B6A75D4745331E203373F7EA7E33F1AB4AB32C5EB5E46C6A88C4ABEF190117_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-1120A062752B75E04C3A7B81840669B5E25DB3DBC45CFF8D0CC69346DAC4450F_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-1120A062752B75E04C3A7B81840669B5E25DB3DBC45CFF8D0CC69346DAC4450F_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-C320703995656DFC7BDD9CC258F76CD533B100BB33E9DB41A6E349C45E44BAF5_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-C320703995656DFC7BDD9CC258F76CD533B100BB33E9DB41A6E349C45E44BAF5_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-CFF9FBFD2D18CC4EB7024C7530A3C6BAC60AB87D92B86EDE0D38B1E0D7BB8245_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-CFF9FBFD2D18CC4EB7024C7530A3C6BAC60AB87D92B86EDE0D38B1E0D7BB8245_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-9E35437BCBF93EE64152A5EF20C5B685711E7466B66CBD6097BA834A4720F4C5_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-9E35437BCBF93EE64152A5EF20C5B685711E7466B66CBD6097BA834A4720F4C5_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-9EFAC9A5C0BE1E8679B29DA5DF4B09B30852429110E80028E09292714964173A_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-9EFAC9A5C0BE1E8679B29DA5DF4B09B30852429110E80028E09292714964173A_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-AC1AF9CEEE8706D3960A4A0EB988BF794CEF5CE3DF8082D7DC84120AE42BE3B7_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-AC1AF9CEEE8706D3960A4A0EB988BF794CEF5CE3DF8082D7DC84120AE42BE3B7_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-12AD84813BC42741940F003CBFDD2F54F33BCADA037D8DBADE228DE369663744_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-12AD84813BC42741940F003CBFDD2F54F33BCADA037D8DBADE228DE369663744_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-32E06EF214C421E040A794EADB4439AC44F82A5EE5F35635E65E73B8AECDD76C_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-32E06EF214C421E040A794EADB4439AC44F82A5EE5F35635E65E73B8AECDD76C_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-9E3087EBEEF070FDB2711BDF59FC839E5D79F62DB38B96673D75716B33731E05_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-9E3087EBEEF070FDB2711BDF59FC839E5D79F62DB38B96673D75716B33731E05_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-F9E742E57EB574223686FFA0CE05911729E0E9BD97A00BF026EAC77ADD8695EC_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-F9E742E57EB574223686FFA0CE05911729E0E9BD97A00BF026EAC77ADD8695EC_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-76BE227FEC733FD2561AD6D1DF08B96A0A18D6BFC25E5516315B0169AF7399B7_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-76BE227FEC733FD2561AD6D1DF08B96A0A18D6BFC25E5516315B0169AF7399B7_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-9F748A4903FD2DF0CF4021752A17170097F60D1A5D9ADC19B54E0D9A2841B6F6_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-9F748A4903FD2DF0CF4021752A17170097F60D1A5D9ADC19B54E0D9A2841B6F6_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-AD5B0F076C17F520AA82D4E0DCADB6F063135BC523A014914FED29B8A76A4BA5_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-AD5B0F076C17F520AA82D4E0DCADB6F063135BC523A014914FED29B8A76A4BA5_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-7310F7DA66670169F67E46DFAD96EA103623E937EFF78C8BD840CBCD4A466CCC_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-7310F7DA66670169F67E46DFAD96EA103623E937EFF78C8BD840CBCD4A466CCC_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-7FCF395FA88EFBC747EBA58AD11D5E942408CE42690A5E8248096A4793FA757B_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-7FCF395FA88EFBC747EBA58AD11D5E942408CE42690A5E8248096A4793FA757B_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-665A61C2E51A75FADFCB162AA43E247D5F4E6F15797408DEEC84CF63778DFAC8_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-665A61C2E51A75FADFCB162AA43E247D5F4E6F15797408DEEC84CF63778DFAC8_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-F76686EE54C46FEC7E87704BEF31CEF69E5324B74CD6B420967B96A24D0E165C_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-F76686EE54C46FEC7E87704BEF31CEF69E5324B74CD6B420967B96A24D0E165C_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-04F21669DC02D7032C4DC4F43B2ED4654D3D5459E5672A7EAB79558F08B17345_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-04F21669DC02D7032C4DC4F43B2ED4654D3D5459E5672A7EAB79558F08B17345_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-2741F1CD01FE27C5AA147CAD9F9F8990C8FD70D8592151E1CCA06EA52D331017_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-2741F1CD01FE27C5AA147CAD9F9F8990C8FD70D8592151E1CCA06EA52D331017_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-8ADC8B702335ABDB995CB11D1A14D4E841EADDEB01EB0C535CD95F92B59610D0_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-8ADC8B702335ABDB995CB11D1A14D4E841EADDEB01EB0C535CD95F92B59610D0_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-F3DA0069EB120EA864F3BB5A35616A8189773AB6FBFB07387BFE7C8ABF5E60F0_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-F3DA0069EB120EA864F3BB5A35616A8189773AB6FBFB07387BFE7C8ABF5E60F0_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-D90B5E03DE89450F6EC849ED0266BF874E1FFF6B77E0DFCC02F2848180499AAA_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-D90B5E03DE89450F6EC849ED0266BF874E1FFF6B77E0DFCC02F2848180499AAA_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-D33AB01878B73D44498AEE05583FAF8D6F4190D4A6395F8A33B969215E3D4694_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-D33AB01878B73D44498AEE05583FAF8D6F4190D4A6395F8A33B969215E3D4694_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-97F3D33F5AA44AAF0506FA087E05AD183F5CDAAA42852A255835C6E1A532DF86_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-97F3D33F5AA44AAF0506FA087E05AD183F5CDAAA42852A255835C6E1A532DF86_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-0831C3D61987911D1E3C86FEAAB6927CE11D587F61269799B4ED7A7111F0E6CA_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-0831C3D61987911D1E3C86FEAAB6927CE11D587F61269799B4ED7A7111F0E6CA_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-5294B2845CE2C64D201A97D03A28ECCB78970DBFCABCCFEE2EAE97C671C54FD0_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-5294B2845CE2C64D201A97D03A28ECCB78970DBFCABCCFEE2EAE97C671C54FD0_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-63C042A573339D645FFDA7B0C46033AC5F39439FAD865A7AB0C8FD7813B8E875_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-63C042A573339D645FFDA7B0C46033AC5F39439FAD865A7AB0C8FD7813B8E875_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-6857C918927ED7DF04BCA2B0A4F4865C32A3B0E52B82427959E27B4A1471827D_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-6857C918927ED7DF04BCA2B0A4F4865C32A3B0E52B82427959E27B4A1471827D_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-944A14FA11B9299C1F758DEF5183A262C791B0845FAB55853D134971D3BCEF59_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-944A14FA11B9299C1F758DEF5183A262C791B0845FAB55853D134971D3BCEF59_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-77643CE6192DEDED1663136CC5779D1B93AE7FD17A0C4F53857A3E1884A87746_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-77643CE6192DEDED1663136CC5779D1B93AE7FD17A0C4F53857A3E1884A87746_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-6BE0FD73331D868E4FF384BD4E0A59446A6298D2A1740B2E3977CBAFBF52BEBE_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-6BE0FD73331D868E4FF384BD4E0A59446A6298D2A1740B2E3977CBAFBF52BEBE_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-8D772027A43FD3B9F547E25372919AD6FB54AF557DC5FAEB9E81C3D262371525_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-8D772027A43FD3B9F547E25372919AD6FB54AF557DC5FAEB9E81C3D262371525_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-17F19E4CB2CCD8AA42A05803F1298AD92AFF967A2CE3D333079388B102B50BED_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-17F19E4CB2CCD8AA42A05803F1298AD92AFF967A2CE3D333079388B102B50BED_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-5FF85093516E3B91F9F97E8FAC89DCEE044952ACDFBA51B49D48B9CCB98119C8_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-5FF85093516E3B91F9F97E8FAC89DCEE044952ACDFBA51B49D48B9CCB98119C8_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-8A306D09AC48A5A073A8DC0A293B9FE36A3519FD0904ACCDC1D79685F88D9F32_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-8A306D09AC48A5A073A8DC0A293B9FE36A3519FD0904ACCDC1D79685F88D9F32_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-3DD278A5890198CFFC63754A27E0C0AABDC3F4A2888227CC8FEEA57B1938472A_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-3DD278A5890198CFFC63754A27E0C0AABDC3F4A2888227CC8FEEA57B1938472A_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-1E5916E168A5CB12430C74F0B52FC17910192388172D701F66160E2C72C8FED0_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-1E5916E168A5CB12430C74F0B52FC17910192388172D701F66160E2C72C8FED0_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-91E1F1A98D9D6B07BD2134CEB45F055CA77431BC8A4460C7C84DB2805B894D5E_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-91E1F1A98D9D6B07BD2134CEB45F055CA77431BC8A4460C7C84DB2805B894D5E_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-4F31FCEBBD58A35918A07AF1390C58F410690C4D6595536F884BE1E6C9EC2B2F_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-4F31FCEBBD58A35918A07AF1390C58F410690C4D6595536F884BE1E6C9EC2B2F_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-38F91830F6BFB462A5AE50D0667432CA8007132544A8C28B33D8EC1D3E5D599D_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-38F91830F6BFB462A5AE50D0667432CA8007132544A8C28B33D8EC1D3E5D599D_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-E440B724343B3B70747E1E72A0F9ECE1D2E13255C152FED34ECF2C36BD18CE52_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-E440B724343B3B70747E1E72A0F9ECE1D2E13255C152FED34ECF2C36BD18CE52_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-0EE021DD1BB7DA228010A03E1B0C9501FD8AC4B81330056D8016DA44EFF84F22_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-0EE021DD1BB7DA228010A03E1B0C9501FD8AC4B81330056D8016DA44EFF84F22_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-66A1CD8929948A204F0AD3C4BDDBB4852DEDF2DCB19E9D37BB27BBC8A739AD47_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-66A1CD8929948A204F0AD3C4BDDBB4852DEDF2DCB19E9D37BB27BBC8A739AD47_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-EEC338D91E90130BF4FDC9917B76D6D10A87F7D380780714012EFA6065CF105D_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-EEC338D91E90130BF4FDC9917B76D6D10A87F7D380780714012EFA6065CF105D_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-D67A23AA966886E9BEF73EE1CB42144238D979E385F5B142FE2E965E98ECF6D5_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-D67A23AA966886E9BEF73EE1CB42144238D979E385F5B142FE2E965E98ECF6D5_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-33DBA7D582311F664DED7F46F082436BBAD040209328C36A527A145C48DD6B91_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-33DBA7D582311F664DED7F46F082436BBAD040209328C36A527A145C48DD6B91_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-65A3F2938ED947D8D0B896AE71557215F56AA7CC61B4B2A50530E3C578BA68BA_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-65A3F2938ED947D8D0B896AE71557215F56AA7CC61B4B2A50530E3C578BA68BA_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-E3AC94FA9F98010FF4C6A4E165B96DE68F8BFADFA8ABF7287DB507897AD1E764_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-E3AC94FA9F98010FF4C6A4E165B96DE68F8BFADFA8ABF7287DB507897AD1E764_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-A537C9D01BEC535DA6278FCE49042D47C349261C496BFF4290942A129583503E_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-A537C9D01BEC535DA6278FCE49042D47C349261C496BFF4290942A129583503E_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-B7EC1ED9266AD904CB95FC53CBF130A0216033DA53BD16F0C27A847A06D61742_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-B7EC1ED9266AD904CB95FC53CBF130A0216033DA53BD16F0C27A847A06D61742_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-B92D7506E2DDFA89652E168CDD5C48238B9672AD97FAE6C620FA5D1385F43A7D_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-B92D7506E2DDFA89652E168CDD5C48238B9672AD97FAE6C620FA5D1385F43A7D_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-75F2A2552BD9946B20CC5C1FCCD2011B8C267323869CCAD06275A04E8999BE8F_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-75F2A2552BD9946B20CC5C1FCCD2011B8C267323869CCAD06275A04E8999BE8F_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-E157999B6F47B57A5460959F855CDDBB43AC06BF696B4C7507AA55C1981D0542_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-E157999B6F47B57A5460959F855CDDBB43AC06BF696B4C7507AA55C1981D0542_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-15CA749CF73071F2DFA3267DF184773B6EA85B7DF597C2EAC05C7F2AE12EEAB8_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-15CA749CF73071F2DFA3267DF184773B6EA85B7DF597C2EAC05C7F2AE12EEAB8_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-2F505A04BDCCA0E40F679B8AA636A5AF05C737DE63F29D6F0A3AECD105587A73_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-2F505A04BDCCA0E40F679B8AA636A5AF05C737DE63F29D6F0A3AECD105587A73_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-E768FCCB0CE5D0A4713F0CF5BEE6F9A6E7FBD6A4FFBF9E499AAEE593D50BAAF6_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-E768FCCB0CE5D0A4713F0CF5BEE6F9A6E7FBD6A4FFBF9E499AAEE593D50BAAF6_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-FD1AC5BECFE4A738D49A5648D44BFDD7159E045B52506BC5980F47CA1C6CFCFE_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-FD1AC5BECFE4A738D49A5648D44BFDD7159E045B52506BC5980F47CA1C6CFCFE_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-F27BD48F0D6E1AEB4FE4C4E1F13227D3FA78E351A0879790E6263FA0F12F89A9_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-F27BD48F0D6E1AEB4FE4C4E1F13227D3FA78E351A0879790E6263FA0F12F89A9_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-D7C7312A31A064BD233B2A06DB364CAA58A4BEB70B3E48DE2BF76B2305F48D3A_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-D7C7312A31A064BD233B2A06DB364CAA58A4BEB70B3E48DE2BF76B2305F48D3A_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-45083928B871F20C50AA1AAB4A36E302615BD31D794F415BA05C1071B51327F5_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-45083928B871F20C50AA1AAB4A36E302615BD31D794F415BA05C1071B51327F5_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-65EA27679D71424D96ECBD8618B4D0E1C387CE562C073EE47D38333BE684D989_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-65EA27679D71424D96ECBD8618B4D0E1C387CE562C073EE47D38333BE684D989_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-72FA2F0859B63E65A4E02BB07F702FC6DB6E6C6BEF76FA73F4F5DFE5C71EC6AC_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-72FA2F0859B63E65A4E02BB07F702FC6DB6E6C6BEF76FA73F4F5DFE5C71EC6AC_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-6C10F74177925ABE41DE8B65C6B452BE163E34148DE7D5C98FBC2DB4014BC0AE_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-6C10F74177925ABE41DE8B65C6B452BE163E34148DE7D5C98FBC2DB4014BC0AE_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-3E4FA50EB54C82EDAE78B5F54F7FD7AB6395046B6479BF61F44C1CBE1FD5E96C_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-3E4FA50EB54C82EDAE78B5F54F7FD7AB6395046B6479BF61F44C1CBE1FD5E96C_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-B6DC6755792DE52FAC03D416C447315B31DEDEEEB0FED3ADC862600644545BBA_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-B6DC6755792DE52FAC03D416C447315B31DEDEEEB0FED3ADC862600644545BBA_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-7FC3E2F42FFB9186451AFDF2E28633D0F9D57D794BC4F79A4D6487982BF10906_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-7FC3E2F42FFB9186451AFDF2E28633D0F9D57D794BC4F79A4D6487982BF10906_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-E946E07A146CA2F70039FA85BD3EF2B4BEEAD5C1113F68AA7C75F043A675DEED_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-E946E07A146CA2F70039FA85BD3EF2B4BEEAD5C1113F68AA7C75F043A675DEED_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-FE223846AA74DAA1DCEA101CA065AC19B2A7A3B16CBEE1CFA297561D22AEB9CA_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-FE223846AA74DAA1DCEA101CA065AC19B2A7A3B16CBEE1CFA297561D22AEB9CA_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-766188B47433A13777B6780E229D3E155060B9F3C243F3934AEBBA2B49D70C27_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-766188B47433A13777B6780E229D3E155060B9F3C243F3934AEBBA2B49D70C27_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-892C96EAA5908639C40408144D8C755E0975EAC8041A44F54A09663AA7367613_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-892C96EAA5908639C40408144D8C755E0975EAC8041A44F54A09663AA7367613_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-B3F88ACECEBE3C4E8304D3E2DB5D660EFA46F36589167FE8D3886FD91FE52CAE_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-B3F88ACECEBE3C4E8304D3E2DB5D660EFA46F36589167FE8D3886FD91FE52CAE_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-EA45F824ED1E6D8AE61447DE422E25CEC4A0ACCB200D096F1FAB43709AEEE0AB_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-EA45F824ED1E6D8AE61447DE422E25CEC4A0ACCB200D096F1FAB43709AEEE0AB_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-83629000C486D76F3ABD1B3A1C35CC90B79DD46EB79F01FFB922AA49337958E5_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-83629000C486D76F3ABD1B3A1C35CC90B79DD46EB79F01FFB922AA49337958E5_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-B5FE93543251EF68F296A714B8592498175D7B5F1A5A5881C6C37341220E5559_0081","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-B5FE93543251EF68F296A714B8592498175D7B5F1A5A5881C6C37341220E5559_0081","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-A780AAC65825FA29B87AA7C6AC4ED3DE0908F366220388676BA112A3309B211C_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-A780AAC65825FA29B87AA7C6AC4ED3DE0908F366220388676BA112A3309B211C_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""},{"MimeType":"application/vnd.nextthought.assessment.questionsubmission","NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-C7615094945FE00FCE99941DDADC40EB24E8F08D317B4A4B1B1F3F9D7A7F428D_0082","tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-C7615094945FE00FCE99941DDADC40EB24E8F08D317B4A4B1B1F3F9D7A7F428D_0082","parts":[null],"CreatorRecordedEffortDuration":null,"ContainerId":""}],"CreatorRecordedEffortDuration":5,"ContainerId":""}],"CreatorRecordedEffortDuration":5,"version":"2021-01-22T05:12:12"}'''
-        answers = {"MimeType": "application/vnd.nextthought.assessment.assignmentsubmission",
-                   "tags": [],
-                   "assignmentId": self.assignment_target_ntiid,
-                   "CreatorRecordedEffortDuration": 12053,
-                   "version": self.version
-                   }
-        questions = self.assignment_parts['question_set']['questions']
 
         index = 0
+        duration = randrange(3, 15)
+        questions = self.assignment_parts['question_set']['questions']
         while index < len(questions):
-            question_parts = []
             if index > 0:
                 wait_time = randrange(3, 15)
                 time.sleep(wait_time)
+                duration += wait_time
+            answers = {"MimeType": "application/vnd.nextthought.assessment.assignmentsubmission",
+                       "tags": [],
+                       "assignmentId": self.assignment_target_ntiid,
+                       "CreatorRecordedEffortDuration": duration,
+                       "version": self.version
+                       }
+            question_parts = []
+
             counter = 0
             for question in questions:
                 question_submission = {
                     "MimeType": "application/vnd.nextthought.assessment.questionsubmission",
                     "NTIID": question["NTIID"],
                     "questionId": question["NTIID"],
+                    "ContainerId": "",
+                    "CreatorRecordedEffortDuration": None,
                     "tags": []}
 
                 # generate random answers for questions
