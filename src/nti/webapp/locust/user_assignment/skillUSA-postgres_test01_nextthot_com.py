@@ -2165,8 +2165,8 @@ class UserBehavior(SequentialTaskSet):
         else:
             print(values)
 
-        # if 'parts' in values:
-        #     self.assignment_parts = values['parts'][0]
+        if 'parts' in values:
+            self.assignment_parts = values['parts'][0]
         print(self.version)
 
     @task()
@@ -2205,7 +2205,7 @@ class UserBehavior(SequentialTaskSet):
             name=url.replace(self.user_id, 'user')
         )
         values = self.response.json()
-        if 'parts' in values:
+        if 'parts' in values and self.assignment_parts is None:
             self.assignment_parts = values['parts'][0]
         print(self.version)
 
@@ -2232,6 +2232,9 @@ class UserBehavior(SequentialTaskSet):
             headers=headers,
             name=url.replace(self.user_id, 'user')
         )
+        values = self.response.json()
+        if 'parts' in values and self.assignment_parts is None:
+            self.assignment_parts = values['parts'][0]
 
     @task()
     def task_000135_2_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_MASTER_WEB_AssignmentSavepoints_stress_tester10_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_CCEC304B1D5A53E0D47E7D0C6F54E2FFC6BDDA27762FA0DDD026BA1B6CF09CD9_0084_Savepoint(
