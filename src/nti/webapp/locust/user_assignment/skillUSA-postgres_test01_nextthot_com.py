@@ -2602,7 +2602,7 @@ class UserBehavior(SequentialTaskSet):
         duration = randrange(3, 15)
         questions = []
         if self.assignment_parts is None:
-            print(self.user_id, self.course_uid)
+            print(f'FAILED TO GET ASSIGNMENTINFO: {self.user_id}, {self.course_uid}')
         else:
             questions = self.assignment_parts['question_set']['questions']
         while index < len(questions):
