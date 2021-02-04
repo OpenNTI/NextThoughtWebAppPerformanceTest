@@ -2165,7 +2165,7 @@ class UserBehavior(SequentialTaskSet):
         else:
             print(values)
 
-        if 'parts' in values and len(values['parts']) > 0 and self.assignment_parts is None:
+        if 'parts' in values and values['parts'] is not None and self.assignment_parts is None:
             self.assignment_parts = values['parts'][0]
         print(self.version)
 
