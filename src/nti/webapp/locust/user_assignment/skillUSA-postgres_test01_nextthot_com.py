@@ -2286,6 +2286,7 @@ class UserBehavior(SequentialTaskSet):
             name=url.replace(self.user_id, 'user')
         )
 
+
     @task()
     def task_000043_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_MASTER_WEB_AssignmentAttemptMetadata_stress_tester10_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_CCEC304B1D5A53E0D47E7D0C6F54E2FFC6BDDA27762FA0DDD026BA1B6CF09CD9_0084_UsersCourseAssignmentAttemptMetadataItem_40_40TimeRemaining(
             self):
@@ -2599,7 +2600,11 @@ class UserBehavior(SequentialTaskSet):
 
         index = 0
         duration = randrange(3, 15)
-        questions = self.assignment_parts['question_set']['questions']
+        questions = []
+        if self.assignment_parts is None:
+            print(self.user_id, self.course_uid)
+        else:
+            questions = self.assignment_parts['question_set']['questions']
         while index < len(questions):
             if index > 0:
                 wait_time = randrange(3, 15)
