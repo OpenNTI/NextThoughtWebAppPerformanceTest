@@ -2348,7 +2348,7 @@ class UserBehavior(SequentialTaskSet):
 
         if 'parts' in values and values['parts'] is not None and self.assignment_parts is None:
             self.assignment_parts = values['parts'][0]
-        print(self.version)
+        print(f'found assignment version: {self.version}')
 
     @task()
     def task_000282_GET_dataserver2_Objects_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_80D83ED6F2F135F490BED679E6C6F9B0E5521025F82FC1755111DBAFC9CA33F0_0084(self):
@@ -2381,6 +2381,17 @@ class UserBehavior(SequentialTaskSet):
             name=url.replace(self.user_id, 'stress.tester')
         )
 
+        if self.verison is None:
+            values = self.response.json()
+            if 'version' in values:
+                self.version = values['version']
+            else:
+                print(values)
+
+            if 'parts' in values and values['parts'] is not None and self.assignment_parts is None:
+                self.assignment_parts = values['parts'][0]
+        print(f'found assignment version: {self.version}')
+
     @task()
     def task_000284_POST_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_120_Orientation_AssignmentAttemptMetadata_stress_tester7_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_80D83ED6F2F135F490BED679E6C6F9B0E5521025F82FC1755111DBAFC9CA33F0_0084_40_40Commence(self):
         url = f'/dataserver2/%2B%2Betc%2B%2Bhostsites/sfdd0438bbad141b59137b0e12c47d7ed/%2B%2Betc%2B%2Bsite/Courses/DefaultAPIImported/120-Orientation/AssignmentAttemptMetadata/{self.user_id}/tag%3Anextthought.com%2C2011-10%3ANTI-NAQ-80D83ED6F2F135F490BED679E6C6F9B0E5521025F82FC1755111DBAFC9CA33F0_0084/%40%40Commence'
@@ -2403,7 +2414,7 @@ class UserBehavior(SequentialTaskSet):
         }
 
         data = {'version': self.version}
-        print(data)
+        print(f'commence call data: {self.user_id} {data}')
         self.response = self.client.request(
             method='POST',
             url=url,
@@ -2414,7 +2425,7 @@ class UserBehavior(SequentialTaskSet):
         values = self.response.json()
         if 'parts' in values and self.assignment_parts is None:
             self.assignment_parts = values['parts'][0]
-        print(self.version)
+
 
     @task()
     def task_000285_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_120_Orientation_AssignmentAttemptMetadata_stress_tester7_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_80D83ED6F2F135F490BED679E6C6F9B0E5521025F82FC1755111DBAFC9CA33F0_0084_UsersCourseAssignmentAttemptMetadataItem_40_40Assignment(self):
