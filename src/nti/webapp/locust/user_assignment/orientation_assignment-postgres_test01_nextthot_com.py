@@ -2508,6 +2508,9 @@ class UserBehavior(SequentialTaskSet):
             headers=headers,
             name=url.replace(self.user_id, 'stress.tester')
         )
+        values = self.response.json()
+        if 'parts' in values and self.assignment_parts is None:
+            self.assignment_parts = values['parts'][0]
 
     @task()
     def task_000291_GET_content_sites_sfdd0438bbad141b59137b0e12c47d7ed_authored_Sfdd0438bbad141b59137b0e12c47d7ed_nti_8060728956857908844_9D3722ACA2C4E554852D_eclipse_toc_xml(self):
