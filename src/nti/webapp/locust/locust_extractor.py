@@ -46,13 +46,16 @@ class locust(object):
         """Generate main locust code."""
         code = dedent("""
             # -*- coding: UTF-8 -*-
+         
+            from locust import HttpUser, TaskSet, task, SequentialTaskSet, between
+            import json
+            import base64
+            import urllib.parse
+            from random import randrange
+            from random import sample
+            import time
 
-            from locust import HttpLocust, TaskSet, task
-            from operator import attrgetter
-            import gevent
-
-
-            class UserBehavior(TaskSet):
+            class UserBehavior(SequentialTaskSet):
                 def on_start(self):
                     ''' on_start is called when a Locust start before any task is scheduled.
                         Here we sort the tasks by name. '''
@@ -73,13 +76,14 @@ class locust(object):
                     self.response = self.client.request(
                         method='{method}',
                         url=url,{args}
+                        name=url.replace(self.user_id, 'stress.tester')
                     )
 
                 ### Additional tasks can go here ###
 
 
-            class WebsiteUser(HttpLocust):
-                task_set = UserBehavior
+            class WebsiteUser(HttpUser):
+                tasks = [UserBehavior]
                 min_wait = 1000
                 max_wait = 3000
                 """).strip()
