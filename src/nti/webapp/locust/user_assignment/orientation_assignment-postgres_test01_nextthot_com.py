@@ -2381,7 +2381,7 @@ class UserBehavior(SequentialTaskSet):
             name=url.replace(self.user_id, 'stress.tester')
         )
 
-        if self.verison is None:
+        if self.version is None:
             values = self.response.json()
             if 'version' in values:
                 self.version = values['version']
