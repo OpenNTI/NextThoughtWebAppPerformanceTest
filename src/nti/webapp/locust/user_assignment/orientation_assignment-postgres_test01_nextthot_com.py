@@ -2415,11 +2415,12 @@ class UserBehavior(SequentialTaskSet):
 
         data = {'version': self.version}
         print(f'commence call data: {self.user_id} {data}')
+        data_str = json.dumps(data)
         self.response = self.client.request(
             method='POST',
             url=url,
             headers=headers,
-            data=data,
+            data=data_str,
             name=url.replace(self.user_id, 'stress.tester')
         )
         values = self.response.json()
@@ -2452,6 +2453,9 @@ class UserBehavior(SequentialTaskSet):
             headers=headers,
             name=url.replace(self.user_id, 'stress.tester')
         )
+        values = self.response.json()
+        if 'parts' in values and self.assignment_parts is None:
+            self.assignment_parts = values['parts'][0]
 
     @task()
     def task_000288_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_120_Orientation_AssignmentSavepoints_stress_tester7_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_80D83ED6F2F135F490BED679E6C6F9B0E5521025F82FC1755111DBAFC9CA33F0_0084_Savepoint(self):
