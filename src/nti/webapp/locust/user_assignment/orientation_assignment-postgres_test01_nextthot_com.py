@@ -1168,38 +1168,38 @@ class UserBehavior(SequentialTaskSet):
             name=url.replace(self.user_id, 'stress.tester')
         )
 
-    @task()
-    def task_000187_POST_dataserver2_users_stress_tester7_FriendsLists(self):
-        url = f'/dataserver2/users/{self.user_id}/FriendsLists'
-        
-        headers = {
-            'Connection': 'keep-alive',
-            'Content-Length': '138',
-            'Accept': 'application/json',
-            'X-NTI-Client-Version': '2021.6.12',
-            'X-NTI-Client-App': '@nti/web-app',
-            'X-Requested-With': 'XMLHttpRequest',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
-            'Content-Type': 'application/vnd.nextthought.friendslist+json',
-            'Origin': '',
-            'Sec-Fetch-Site': 'same-origin',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Dest': 'empty',
-            'Referer': '/app/',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'en-US,en;q=0.9',
-        }
-
-        data = {"MimeType":"application/vnd.nextthought.friendslist","tags":[],"Username":f"mycontacts-{self.user_id}","alias":"My Contacts","friends":[]}
-        data_str = json.dumps(data)
-
-        self.response = self.client.request(
-            method='POST',
-            url=url,
-            headers=headers,
-            data=data_str,
-            name=url.replace(self.user_id, 'stress.tester')
-        )
+    # @task()
+    # def task_000187_POST_dataserver2_users_stress_tester7_FriendsLists(self):
+    #     url = f'/dataserver2/users/{self.user_id}/FriendsLists'
+    #
+    #     headers = {
+    #         'Connection': 'keep-alive',
+    #         'Content-Length': '138',
+    #         'Accept': 'application/json',
+    #         'X-NTI-Client-Version': '2021.6.12',
+    #         'X-NTI-Client-App': '@nti/web-app',
+    #         'X-Requested-With': 'XMLHttpRequest',
+    #         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
+    #         'Content-Type': 'application/vnd.nextthought.friendslist+json',
+    #         'Origin': '',
+    #         'Sec-Fetch-Site': 'same-origin',
+    #         'Sec-Fetch-Mode': 'cors',
+    #         'Sec-Fetch-Dest': 'empty',
+    #         'Referer': '/app/',
+    #         'Accept-Encoding': 'gzip, deflate, br',
+    #         'Accept-Language': 'en-US,en;q=0.9',
+    #     }
+    #
+    #     data = {"MimeType":"application/vnd.nextthought.friendslist","tags":[],"Username":f"mycontacts-{self.user_id}","alias":"My Contacts","friends":[]}
+    #     data_str = json.dumps(data)
+    #
+    #     self.response = self.client.request(
+    #         method='POST',
+    #         url=url,
+    #         headers=headers,
+    #         data=data_str,
+    #         name=url.replace(self.user_id, 'stress.tester')
+    #     )
 
     @task()
     def task_000188_GET_dataserver2_users_stress_tester7_Pages_28tag_3Anextthought_com_2C2011_10_3ARoot_29_RUGDByOthersThatIMightBeInterestedIn_lastViewed(self):
