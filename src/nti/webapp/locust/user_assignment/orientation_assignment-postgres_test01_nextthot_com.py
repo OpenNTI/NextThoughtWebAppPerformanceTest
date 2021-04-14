@@ -2833,35 +2833,35 @@ class UserBehavior(SequentialTaskSet):
             name=url.replace(self.user_id, 'stress.tester')
         )
 
-    @task()
-    def task_000304_POST_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_120_Orientation_Assessments_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_80D83ED6F2F135F490BED679E6C6F9B0E5521025F82FC1755111DBAFC9CA33F0_0084(self):
-        url = f'/dataserver2/%2B%2Betc%2B%2Bhostsites/sfdd0438bbad141b59137b0e12c47d7ed/%2B%2Betc%2B%2Bsite/Courses/DefaultAPIImported/120-Orientation/Assessments/tag%3Anextthought.com%2C2011-10%3ANTI-NAQ-80D83ED6F2F135F490BED679E6C6F9B0E5521025F82FC1755111DBAFC9CA33F0_0084'
-        
-        headers = {
-            'Connection': 'keep-alive',
-            'Content-Length': '25372',
-            'Accept': 'application/json',
-            'X-NTI-Client-Version': '2021.6.12',
-            'X-NTI-Client-App': '@nti/web-app',
-            'X-Requested-With': 'XMLHttpRequest',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
-            'Content-Type': 'application/vnd.nextthought.assessment.assignmentsubmission+json',
-            'Origin': '',
-            'Sec-Fetch-Site': 'same-origin',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Dest': 'empty',
-            'Referer': '/app/course/admin.user-OID-0xa88095%3A5573657273%3AucvfaTqmB9A/lessons/NTI-NTICourseOutlineNode-1358944583079762845_4744553183735993139.0.2/items/NTI-NTIAssignmentRef-9273988BA9829FA574D8D2CA31598196A6A9882879066574FFE7FEF0403A9190_0088',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'en-US,en;q=0.9',
-        }
-
-        self.response = self.client.request(
-            method='POST',
-            url=url,
-            headers=headers,
-            data=self.final_answer,
-            name=url.replace(self.user_id, 'stress.tester')
-        )
+    # @task()
+    # def task_000304_POST_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_120_Orientation_Assessments_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_80D83ED6F2F135F490BED679E6C6F9B0E5521025F82FC1755111DBAFC9CA33F0_0084(self):
+    #     url = f'/dataserver2/%2B%2Betc%2B%2Bhostsites/sfdd0438bbad141b59137b0e12c47d7ed/%2B%2Betc%2B%2Bsite/Courses/DefaultAPIImported/120-Orientation/Assessments/tag%3Anextthought.com%2C2011-10%3ANTI-NAQ-80D83ED6F2F135F490BED679E6C6F9B0E5521025F82FC1755111DBAFC9CA33F0_0084'
+    #
+    #     headers = {
+    #         'Connection': 'keep-alive',
+    #         'Content-Length': '25372',
+    #         'Accept': 'application/json',
+    #         'X-NTI-Client-Version': '2021.6.12',
+    #         'X-NTI-Client-App': '@nti/web-app',
+    #         'X-Requested-With': 'XMLHttpRequest',
+    #         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
+    #         'Content-Type': 'application/vnd.nextthought.assessment.assignmentsubmission+json',
+    #         'Origin': '',
+    #         'Sec-Fetch-Site': 'same-origin',
+    #         'Sec-Fetch-Mode': 'cors',
+    #         'Sec-Fetch-Dest': 'empty',
+    #         'Referer': '/app/course/admin.user-OID-0xa88095%3A5573657273%3AucvfaTqmB9A/lessons/NTI-NTICourseOutlineNode-1358944583079762845_4744553183735993139.0.2/items/NTI-NTIAssignmentRef-9273988BA9829FA574D8D2CA31598196A6A9882879066574FFE7FEF0403A9190_0088',
+    #         'Accept-Encoding': 'gzip, deflate, br',
+    #         'Accept-Language': 'en-US,en;q=0.9',
+    #     }
+    #
+    #     self.response = self.client.request(
+    #         method='POST',
+    #         url=url,
+    #         headers=headers,
+    #         data=self.final_answer,
+    #         name=url.replace(self.user_id, 'stress.tester')
+    #     )
 
     @task()
     def task_000305_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_120_Orientation_40_40UserCoursePreferredAccess(self):
@@ -3820,57 +3820,57 @@ class UserBehavior(SequentialTaskSet):
             name=url.replace(self.user_id, 'stress.tester')
         )
 
-    @task()
-    def task_000347_POST_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_120_Orientation_Assessments_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_8BFD14ED014634B732EA7E27EB1FEF211AE3FC741268530C3AB7EBF4310E05C7_0084(self):
-        url = f'/dataserver2/%2B%2Betc%2B%2Bhostsites/sfdd0438bbad141b59137b0e12c47d7ed/%2B%2Betc%2B%2Bsite/Courses/DefaultAPIImported/120-Orientation/Assessments/tag%3Anextthought.com%2C2011-10%3ANTI-NAQ-8BFD14ED014634B732EA7E27EB1FEF211AE3FC741268530C3AB7EBF4310E05C7_0084'
-        
-        headers = {
-            'Connection': 'keep-alive',
-            'Content-Length': '1955',
-            'Accept': 'application/json',
-            'X-NTI-Client-Version': '2021.6.12',
-            'X-NTI-Client-App': '@nti/web-app',
-            'X-Requested-With': 'XMLHttpRequest',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
-            'Content-Type': 'application/vnd.nextthought.assessment.assignmentsubmission+json',
-            'Origin': '',
-            'Sec-Fetch-Site': 'same-origin',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Dest': 'empty',
-            'Referer': '/app/course/admin.user-OID-0xa88095%3A5573657273%3AucvfaTqmB9A/lessons/NTI-NTICourseOutlineNode-1358944583079762845_4744553183735993139.0.3/items/NTI-NTIAssignmentRef-27FEE99878A8AB4A627C56CAF72B9ACF240D7B9A8E9F74FCD1B1CA79034A6225_0088',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'en-US,en;q=0.9',
-        }
-
-        data = {"MimeType":"application/vnd.nextthought.assessment.assignmentsubmission",
-                "tags":[],"assignmentId":"tag:nextthought.com,2011-10:NTI-NAQ-8BFD14ED014634B732EA7E27EB1FEF211AE3FC741268530C3AB7EBF4310E05C7_0084",
-                "parts":[{"MimeType":"application/vnd.nextthought.assessment.questionsetsubmission","NTIID":None,
-                          "tags":[],"questionSetId":"tag:nextthought.com,2011-10:NTI-NAQ-27758084485CA5EB0E4B6E1696EAA2FD38E51D2A0649A88B35ED591768B39EB0_0084",
-                          "questions":[{"MimeType":"application/vnd.nextthought.assessment.questionsubmission",
-                                        "NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-805AFCE29113B27DCB03D0C4788361EF89482A3F313FC6BC7EE18CD49EE80666_0081",
-                                        "tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-805AFCE29113B27DCB03D0C4788361EF89482A3F313FC6BC7EE18CD49EE80666_0081",
-                                        "parts":[{"Class":"QUploadedFile","CreatedTime":1618271146.297744,
-                                                  "FileMimeType":"application/msword","Last Modified":1618271146.297744,
-                                                  "MimeType":"application/vnd.nextthought.assessment.uploadedfile",
-                                                  "NTIID":"tag:nextthought.com,2011-10:system-OID-0x0148d350:5573657273",
-                                                  "OID":"tag:nextthought.com,2011-10:system-OID-0x0148d350:5573657273",
-                                                  "contentType":"application/msword",
-                                                  "download_url":"/dataserver2/Objects/tag%3Anextthought.com%2C2011-10%3Asystem-OID-0x0148d350%3A5573657273/@@download/sample.doc",
-                                                  "filename":"sample.doc","name":"sample.doc","size":32768,
-                                                  "url":"/dataserver2/Objects/tag%3Anextthought.com%2C2011-10%3Asystem-OID-0x0148d350%3A5573657273/@@view/sample.doc",
-                                                  "value":"/dataserver2/Objects/tag%3Anextthought.com%2C2011-10%3Asystem-OID-0x0148d350%3A5573657273/@@view/sample.doc"}],
-                                        "CreatorRecordedEffortDuration":None,
-                                        "ContainerId":"tag:nextthought.com,2011-10:NTI-NAQ-8BFD14ED014634B732EA7E27EB1FEF211AE3FC741268530C3AB7EBF4310E05C7_0084"}],
-                          "CreatorRecordedEffortDuration":16,"ContainerId":"tag:nextthought.com,2011-10:NTI-NAQ-8BFD14ED014634B732EA7E27EB1FEF211AE3FC741268530C3AB7EBF4310E05C7_0084"}],
-                "CreatorRecordedEffortDuration":16,"version":self.version}
-        data_str = json.dumps(data)
-        self.response = self.client.request(
-            method='POST',
-            url=url,
-            headers=headers,
-            data=data_str,
-            name=url.replace(self.user_id, 'stress.tester')
-        )
+    # @task()
+    # def task_000347_POST_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_120_Orientation_Assessments_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_8BFD14ED014634B732EA7E27EB1FEF211AE3FC741268530C3AB7EBF4310E05C7_0084(self):
+    #     url = f'/dataserver2/%2B%2Betc%2B%2Bhostsites/sfdd0438bbad141b59137b0e12c47d7ed/%2B%2Betc%2B%2Bsite/Courses/DefaultAPIImported/120-Orientation/Assessments/tag%3Anextthought.com%2C2011-10%3ANTI-NAQ-8BFD14ED014634B732EA7E27EB1FEF211AE3FC741268530C3AB7EBF4310E05C7_0084'
+    #
+    #     headers = {
+    #         'Connection': 'keep-alive',
+    #         'Content-Length': '1955',
+    #         'Accept': 'application/json',
+    #         'X-NTI-Client-Version': '2021.6.12',
+    #         'X-NTI-Client-App': '@nti/web-app',
+    #         'X-Requested-With': 'XMLHttpRequest',
+    #         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
+    #         'Content-Type': 'application/vnd.nextthought.assessment.assignmentsubmission+json',
+    #         'Origin': '',
+    #         'Sec-Fetch-Site': 'same-origin',
+    #         'Sec-Fetch-Mode': 'cors',
+    #         'Sec-Fetch-Dest': 'empty',
+    #         'Referer': '/app/course/admin.user-OID-0xa88095%3A5573657273%3AucvfaTqmB9A/lessons/NTI-NTICourseOutlineNode-1358944583079762845_4744553183735993139.0.3/items/NTI-NTIAssignmentRef-27FEE99878A8AB4A627C56CAF72B9ACF240D7B9A8E9F74FCD1B1CA79034A6225_0088',
+    #         'Accept-Encoding': 'gzip, deflate, br',
+    #         'Accept-Language': 'en-US,en;q=0.9',
+    #     }
+    #
+    #     data = {"MimeType":"application/vnd.nextthought.assessment.assignmentsubmission",
+    #             "tags":[],"assignmentId":"tag:nextthought.com,2011-10:NTI-NAQ-8BFD14ED014634B732EA7E27EB1FEF211AE3FC741268530C3AB7EBF4310E05C7_0084",
+    #             "parts":[{"MimeType":"application/vnd.nextthought.assessment.questionsetsubmission","NTIID":None,
+    #                       "tags":[],"questionSetId":"tag:nextthought.com,2011-10:NTI-NAQ-27758084485CA5EB0E4B6E1696EAA2FD38E51D2A0649A88B35ED591768B39EB0_0084",
+    #                       "questions":[{"MimeType":"application/vnd.nextthought.assessment.questionsubmission",
+    #                                     "NTIID":"tag:nextthought.com,2011-10:NTI-NAQ-805AFCE29113B27DCB03D0C4788361EF89482A3F313FC6BC7EE18CD49EE80666_0081",
+    #                                     "tags":[],"questionId":"tag:nextthought.com,2011-10:NTI-NAQ-805AFCE29113B27DCB03D0C4788361EF89482A3F313FC6BC7EE18CD49EE80666_0081",
+    #                                     "parts":[{"Class":"QUploadedFile","CreatedTime":1618271146.297744,
+    #                                               "FileMimeType":"application/msword","Last Modified":1618271146.297744,
+    #                                               "MimeType":"application/vnd.nextthought.assessment.uploadedfile",
+    #                                               "NTIID":"tag:nextthought.com,2011-10:system-OID-0x0148d350:5573657273",
+    #                                               "OID":"tag:nextthought.com,2011-10:system-OID-0x0148d350:5573657273",
+    #                                               "contentType":"application/msword",
+    #                                               "download_url":"/dataserver2/Objects/tag%3Anextthought.com%2C2011-10%3Asystem-OID-0x0148d350%3A5573657273/@@download/sample.doc",
+    #                                               "filename":"sample.doc","name":"sample.doc","size":32768,
+    #                                               "url":"/dataserver2/Objects/tag%3Anextthought.com%2C2011-10%3Asystem-OID-0x0148d350%3A5573657273/@@view/sample.doc",
+    #                                               "value":"/dataserver2/Objects/tag%3Anextthought.com%2C2011-10%3Asystem-OID-0x0148d350%3A5573657273/@@view/sample.doc"}],
+    #                                     "CreatorRecordedEffortDuration":None,
+    #                                     "ContainerId":"tag:nextthought.com,2011-10:NTI-NAQ-8BFD14ED014634B732EA7E27EB1FEF211AE3FC741268530C3AB7EBF4310E05C7_0084"}],
+    #                       "CreatorRecordedEffortDuration":16,"ContainerId":"tag:nextthought.com,2011-10:NTI-NAQ-8BFD14ED014634B732EA7E27EB1FEF211AE3FC741268530C3AB7EBF4310E05C7_0084"}],
+    #             "CreatorRecordedEffortDuration":16,"version":self.version}
+    #     data_str = json.dumps(data)
+    #     self.response = self.client.request(
+    #         method='POST',
+    #         url=url,
+    #         headers=headers,
+    #         data=data_str,
+    #         name=url.replace(self.user_id, 'stress.tester')
+    #     )
 
     @task()
     def task_000348_GET_dataserver2_2B_2Betc_2B_2Bhostsites_sfdd0438bbad141b59137b0e12c47d7ed_2B_2Betc_2B_2Bsite_Courses_DefaultAPIImported_120_Orientation_Assessments_tag_3Anextthought_com_2C2011_10_3ANTI_NAQ_8BFD14ED014634B732EA7E27EB1FEF211AE3FC741268530C3AB7EBF4310E05C7_0084(self):
