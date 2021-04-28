@@ -785,7 +785,7 @@ class UserBehavior(SequentialTaskSet):
             headers=headers,
             name=url.replace(self.user_id, 'stress.tester')
         )
-        time.sleep(200000)
+
 
 class WebsiteUser(HttpUser):
     tasks = [UserBehavior]
