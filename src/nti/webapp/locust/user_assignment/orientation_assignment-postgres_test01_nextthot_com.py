@@ -1039,7 +1039,7 @@ class UserBehavior(SequentialTaskSet):
 
     @task()
     def task_000182_GET_dataserver2_users_stress_tester7_Courses_EnrolledCourses_40_40Favorites(self):
-        url = f'/dataserver2/users/{self.user_id}/Courses/EnrolledCourses/%40%40Favorites'
+        url = f'/dataserver2/users/{self.user_id}/Courses/EnrolledCourses?batchSize=80&batchStart=0&filter={self.course_uid}&sortOn=createdTime&sortOrder=descending'
         
         headers = {
             'Connection': 'keep-alive',
@@ -1069,12 +1069,12 @@ class UserBehavior(SequentialTaskSet):
         if 'Items' in values:
             items = values["Items"]
             for item in items:
-                if item["CatalogEntry"]["ProviderUniqueID"] == self.course_uid:
-                    self.course_ntiid = item["CatalogEntry"]["NTIID"]
-                    links = item["CatalogEntry"]["Links"]
-                    for link in links:
-                        if link['rel'] == "CourseInstance":
-                            self.course_instance_link = link['href']
+                # if item["CatalogEntry"]["ProviderUniqueID"] == self.course_uid:
+                self.course_ntiid = item["CatalogEntry"]["NTIID"]
+                links = item["CatalogEntry"]["Links"]
+                for link in links:
+                    if link['rel'] == "CourseInstance":
+                        self.course_instance_link = link['href']
         print(self.course_instance_link, self.course_ntiid)
 
     @task()
