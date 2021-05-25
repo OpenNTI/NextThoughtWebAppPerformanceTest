@@ -1039,6 +1039,34 @@ class UserBehavior(SequentialTaskSet):
 
     @task()
     def task_000182_GET_dataserver2_users_stress_tester7_Courses_EnrolledCourses_40_40Favorites(self):
+        url = f'/dataserver2/users/{self.user_id}/Courses/EnrolledCourses/%40%40Favorites'
+
+        headers = {
+            'Connection': 'keep-alive',
+            'accept': 'application/json',
+            'X-NTI-Client-TZOffset': '-300',
+            'X-NTI-Client-Version': '2021.6.12',
+            'X-NTI-Client-App': '@nti/web-app',
+            'x-requested-with': 'XMLHttpRequest',
+            'X-NTI-Client-Timezone': 'America/Chicago',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
+            'Sec-Fetch-Site': 'same-origin',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Dest': 'empty',
+            'Referer': '/app/',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'en-US,en;q=0.9',
+        }
+
+        self.response = self.client.request(
+            method='GET',
+            url=url,
+            headers=headers,
+            name=url.replace(self.user_id, 'stress.tester')
+        )
+
+    @task()
+    def task_000182_GET_dataserver2_users_stress_tester7_Courses_EnrolledCourses(self):
         url = f'/dataserver2/users/{self.user_id}/Courses/EnrolledCourses?batchSize=80&batchStart=0&filter={self.course_uid}&sortOn=createdTime&sortOrder=descending'
         
         headers = {
