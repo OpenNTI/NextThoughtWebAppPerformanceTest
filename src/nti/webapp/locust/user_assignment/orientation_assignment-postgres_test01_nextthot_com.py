@@ -2763,7 +2763,7 @@ class UserBehavior(SequentialTaskSet):
             questions = self.assignment_parts['question_set']['questions']
         while index < len(questions):
             if index > 0:
-                wait_time = randrange(5, 15)
+                wait_time = randrange(10, 20)
                 time.sleep(wait_time)
                 duration += wait_time
             answers = {"MimeType": "application/vnd.nextthought.assessment.assignmentsubmission",
