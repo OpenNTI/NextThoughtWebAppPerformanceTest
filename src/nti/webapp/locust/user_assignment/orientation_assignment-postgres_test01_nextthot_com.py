@@ -8,7 +8,7 @@ from random import randrange
 from random import sample
 import time
 
-USER_CREDENTIALS = list(range(1, 1501))
+USER_CREDENTIALS = list(range(1, 1000))
 ASSIGNMENT_INFO = [
     {
         "course_uid": "120-Orientation",
