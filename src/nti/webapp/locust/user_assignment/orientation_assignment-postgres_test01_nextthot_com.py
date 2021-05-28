@@ -6,9 +6,11 @@ import base64
 import urllib.parse
 from random import randrange
 from random import sample
+from random import shuffle
 import time
 
 USER_CREDENTIALS = list(range(1, 1000))
+shuffle(USER_CREDENTIALS)
 ASSIGNMENT_INFO = [
     {
         "course_uid": "120-Orientation",
