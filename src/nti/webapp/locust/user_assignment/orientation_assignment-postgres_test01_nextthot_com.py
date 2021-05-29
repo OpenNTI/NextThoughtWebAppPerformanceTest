@@ -2765,7 +2765,7 @@ class UserBehavior(SequentialTaskSet):
             questions = self.assignment_parts['question_set']['questions']
         while index < len(questions):
             if index > 0:
-                wait_time = randrange(10, 20)
+                wait_time = randrange(20, 40)
                 time.sleep(wait_time)
                 duration += wait_time
             answers = {"MimeType": "application/vnd.nextthought.assessment.assignmentsubmission",
@@ -2816,7 +2816,7 @@ class UserBehavior(SequentialTaskSet):
                 data=answers_str,
                 name=url.replace(self.user_id, 'user')
             )
-            index += 1
+            index += 2
             if index == len(questions):
                 self.final_answer = answers_str
 
