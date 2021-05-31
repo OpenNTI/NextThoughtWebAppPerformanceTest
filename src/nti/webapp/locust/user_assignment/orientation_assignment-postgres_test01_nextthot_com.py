@@ -9,7 +9,7 @@ from random import sample
 from random import shuffle
 import time
 
-USER_CREDENTIALS = list(range(1, 1000))
+USER_CREDENTIALS = list(range(1, 1501))
 shuffle(USER_CREDENTIALS)
 ASSIGNMENT_INFO = [
     {
