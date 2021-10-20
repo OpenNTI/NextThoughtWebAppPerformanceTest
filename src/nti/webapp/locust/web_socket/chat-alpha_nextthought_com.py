@@ -3,7 +3,6 @@
 
 from socketIO_client import SocketIO
 
-
 import socketio
 import ssl
 import re
@@ -14,7 +13,7 @@ import json
 import base64
 import urllib.parse
 from random import randrange
-from random import sample
+from random import shuffle
 import time
 
 LOCUST_MAJOR_VERSION = LooseVersion(__version__).version[0]
@@ -39,10 +38,13 @@ else:
     from locust import task
 
 USER_CREDENTIALS = list(range(1, 100))
+shuffle(USER_CREDENTIALS)
+
 
 class ChatTestSequence(TaskSequence):
     socket_id = ''
     ws = None
+    group_size = 20
 
     def on_start(self):
         self.user_id = USER_CREDENTIALS.pop()
@@ -50,8 +52,8 @@ class ChatTestSequence(TaskSequence):
 
     @seq_task(1)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_logon_ping_1740245181_9163390597641746111(self):
-        response = self.client.get(url='https://alpha.nextthought.com/dataserver2/logon.ping',
-                                   name='https://alpha.nextthought.com/dataserver2/logon.ping', timeout=30,
+        response = self.client.get(url='/dataserver2/logon.ping',
+                                   name='/dataserver2/logon.ping', timeout=30,
                                    allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'accept': 'application/json', 'X-NTI-Client-TZOffset': '-300',
@@ -61,15 +63,14 @@ class ChatTestSequence(TaskSequence):
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                                             'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
                                             'Sec-Fetch-Dest': 'empty',
-                                            'Referer': 'https://alpha.nextthought.com/login/',
+                                            'Referer': '/login/',
                                             'Accept-Encoding': 'gzip, deflate, br',
                                             'Accept-Language': 'en-US,en;q=0.9'})
 
-        
     @seq_task(2)
     def POST_https_alpha_nextthought_com_1547110500__dataserver2_logon_handshake_2567834294_6695688389070149553(self):
-        response = self.client.post(url='https://alpha.nextthought.com/dataserver2/logon.handshake',
-                                    name='https://alpha.nextthought.com/dataserver2/logon.handshake', timeout=30,
+        response = self.client.post(url='/dataserver2/logon.handshake',
+                                    name='/dataserver2/logon.handshake', timeout=30,
                                     allow_redirects=False,
                                     headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                              'Content-Length': '154', 'X-NTI-Client-TZOffset': '-300',
@@ -79,16 +80,15 @@ class ChatTestSequence(TaskSequence):
                                              'accept': 'application/json',
                                              'X-NTI-Client-Version': '2021.9.0-alpha.20210719130849',
                                              'X-NTI-Client-App': '@nti/web-login', 'x-requested-with': 'XMLHttpRequest',
-                                             'Sec-GPC': '1', 'Origin': 'https://alpha.nextthought.com',
+                                             'Sec-GPC': '1', 'Origin': '',
                                              'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
                                              'Sec-Fetch-Dest': 'empty',
-                                             'Referer': 'https://alpha.nextthought.com/login/',
+                                             'Referer': '/login/',
                                              'Accept-Encoding': 'gzip, deflate, br',
                                              'Accept-Language': 'en-US,en;q=0.9'},
                                     data=f'------WebKitFormBoundarytXh5Gjofu8pojlR1\r\nContent-Disposition: form-data; name="username"\r\n\r\nstress.tester{self.user_id}\r\n------WebKitFormBoundarytXh5Gjofu8pojlR1--\r\n',
                                     params=[(b'username', f'stress.tester{self.user_id}')])
 
-        
     @seq_task(3)
     def task_000012_GET_dataserver2_logon_nti_password(self):
         url = '/dataserver2/logon.nti.password'
@@ -127,8 +127,8 @@ class ChatTestSequence(TaskSequence):
 
     @seq_task(4)
     def GET_https_alpha_nextthought_com_1547110500__loginsuccess_592577858_3799443983705926674(self):
-        response = self.client.get(url='https://alpha.nextthought.com/loginsuccess?_u=42',
-                                   name='https://alpha.nextthought.com/loginsuccess?_u=42', timeout=30,
+        response = self.client.get(url='/loginsuccess?_u=42',
+                                   name='/loginsuccess?_u=42', timeout=30,
                                    allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'Upgrade-Insecure-Requests': '1',
@@ -137,14 +137,13 @@ class ChatTestSequence(TaskSequence):
                                             'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin',
                                             'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-User': '?1',
                                             'Sec-Fetch-Dest': 'document',
-                                            'Referer': 'https://alpha.nextthought.com/login/',
+                                            'Referer': '/login/',
                                             'Accept-Encoding': 'gzip, deflate, br',
                                             'Accept-Language': 'en-US,en;q=0.9'})
 
-        
     @seq_task(5)
     def GET_https_alpha_nextthought_com_1547110500__app__80937376_1607111895871011149(self):
-        response = self.client.get(url='https://alpha.nextthought.com/app/', name='https://alpha.nextthought.com/app/',
+        response = self.client.get(url='/app/', name='/app/',
                                    timeout=30, allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'Upgrade-Insecure-Requests': '1',
@@ -153,128 +152,115 @@ class ChatTestSequence(TaskSequence):
                                             'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin',
                                             'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-User': '?1',
                                             'Sec-Fetch-Dest': 'document',
-                                            'Referer': 'https://alpha.nextthought.com/login/',
+                                            'Referer': '/login/',
                                             'Accept-Encoding': 'gzip, deflate, br',
                                             'Accept-Language': 'en-US,en;q=0.9'})
 
-        
     @seq_task(32)
     def GET_https_cdnjs_cloudflare_com_1381697487__ajax_libs_jquery_1_12_2_jquery_min_js_4268887321_5151152229879930393(
             self):
         response = self.client.get(url='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.2/jquery.min.js',
                                    name='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.2/jquery.min.js',
                                    timeout=30, allow_redirects=False,
-                                   headers={'Referer': 'https://alpha.nextthought.com/',
+                                   headers={'Referer': '/',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(33)
     def GET_https_cdnjs_cloudflare_com_1381697487__ajax_libs_jquery_payment_1_3_2_jquery_payment_min_js_85267265_5896680702895854120(
             self):
         response = self.client.get(
             url='https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/1.3.2/jquery.payment.min.js',
             name='https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/1.3.2/jquery.payment.min.js', timeout=30,
-            allow_redirects=False, headers={'Referer': 'https://alpha.nextthought.com/',
+            allow_redirects=False, headers={'Referer': '/',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(34)
     def GET_https_alpha_nextthought_com_1547110500__vendor_mathquill_0_9_4_mathquill_min_js_660147809_6024304183239599542(
             self):
-        response = self.client.get(url='https://alpha.nextthought.com/vendor/mathquill-0.9.4/mathquill.min.js',
-                                   name='https://alpha.nextthought.com/vendor/mathquill-0.9.4/mathquill.min.js',
+        response = self.client.get(url='/vendor/mathquill-0.9.4/mathquill.min.js',
+                                   name='/vendor/mathquill-0.9.4/mathquill.min.js',
                                    timeout=30, allow_redirects=False,
-                                   headers={'Referer': 'https://alpha.nextthought.com/app/',
+                                   headers={'Referer': '/app/',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(35)
     def GET_https_alpha_nextthought_com_1547110500__vendor_ext_4_2_ext_all_js_2034239728_8115319168489610585(self):
-        response = self.client.get(url='https://alpha.nextthought.com/vendor/ext-4.2/ext-all.js',
-                                   name='https://alpha.nextthought.com/vendor/ext-4.2/ext-all.js', timeout=30,
-                                   allow_redirects=False, headers={'Referer': 'https://alpha.nextthought.com/app/',
+        response = self.client.get(url='/vendor/ext-4.2/ext-all.js',
+                                   name='/vendor/ext-4.2/ext-all.js', timeout=30,
+                                   allow_redirects=False, headers={'Referer': '/app/',
                                                                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(36)
     def GET_https_backpack_openbadges_org_1797261549__issuer_js_345899990_7754120366749652455(self):
         response = self.client.get(url='https://backpack.openbadges.org/issuer.js',
                                    name='https://backpack.openbadges.org/issuer.js', timeout=30, allow_redirects=False,
-                                   headers={'Referer': 'https://alpha.nextthought.com/',
+                                   headers={'Referer': '/',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(37)
     def GET_https_alpha_nextthought_com_1547110500__app_resources_lib_timeline_js_storyjs_embed_js_2910654965_4279762423967585818(
             self):
-        response = self.client.get(url='https://alpha.nextthought.com/app/resources/lib/timeline/js/storyjs-embed.js',
-                                   name='https://alpha.nextthought.com/app/resources/lib/timeline/js/storyjs-embed.js',
+        response = self.client.get(url='/app/resources/lib/timeline/js/storyjs-embed.js',
+                                   name='/app/resources/lib/timeline/js/storyjs-embed.js',
                                    timeout=30, allow_redirects=False,
-                                   headers={'Referer': 'https://alpha.nextthought.com/app/',
+                                   headers={'Referer': '/app/',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(38)
     def GET_https_alpha_nextthought_com_1547110500__app_resources_strings_strings_js_3646885112_7191354634372851349(
             self):
-        response = self.client.get(url='https://alpha.nextthought.com/app/resources/strings/strings.js',
-                                   name='https://alpha.nextthought.com/app/resources/strings/strings.js', timeout=30,
+        response = self.client.get(url='/app/resources/strings/strings.js',
+                                   name='/app/resources/strings/strings.js', timeout=30,
                                    allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                                             'Accept': '*/*', 'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin',
                                             'Sec-Fetch-Mode': 'no-cors', 'Sec-Fetch-Dest': 'script',
-                                            'Referer': 'https://alpha.nextthought.com/app/',
+                                            'Referer': '/app/',
                                             'Accept-Encoding': 'gzip, deflate, br',
                                             'Accept-Language': 'en-US,en;q=0.9'})
 
-        
     @seq_task(39)
     def GET_https_alpha_nextthought_com_1547110500__site_assets_webapp_strings_js_2968652695_3732221955927121266(self):
-        response = self.client.get(url='https://alpha.nextthought.com/site-assets/webapp/strings.js',
-                                   name='https://alpha.nextthought.com/site-assets/webapp/strings.js', timeout=30,
-                                   allow_redirects=False, headers={'Referer': 'https://alpha.nextthought.com/app/',
+        response = self.client.get(url='/site-assets/webapp/strings.js',
+                                   name='/site-assets/webapp/strings.js', timeout=30,
+                                   allow_redirects=False, headers={'Referer': '/app/',
                                                                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(82)
     def GET_https_alpha_nextthought_com_1547110500__vendor_ext_4_2_resources_ext_theme_classic_ext_theme_classic_all_css_1892948356_298870827457666306(
             self):
         response = self.client.get(
-            url='https://alpha.nextthought.com/vendor/ext-4.2/resources/ext-theme-classic/ext-theme-classic-all.css',
-            name='https://alpha.nextthought.com/vendor/ext-4.2/resources/ext-theme-classic/ext-theme-classic-all.css',
+            url='/vendor/ext-4.2/resources/ext-theme-classic/ext-theme-classic-all.css',
+            name='/vendor/ext-4.2/resources/ext-theme-classic/ext-theme-classic-all.css',
             timeout=30, allow_redirects=False,
-            headers={'Referer': 'https://alpha.nextthought.com/vendor/ext-4.2/resources/css/ext-all.css',
+            headers={'Referer': '/vendor/ext-4.2/resources/css/ext-all.css',
                      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(83)
     def GET_https_fonts_googleapis_com_1413416944__css_54657401_295203004052429311(self):
         response = self.client.get(
             url='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic',
             name='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic',
-            timeout=30, allow_redirects=False, headers={'Referer': 'https://alpha.nextthought.com/',
+            timeout=30, allow_redirects=False, headers={'Referer': '/',
                                                         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(84)
     def GET_https_fonts_googleapis_com_1413416944__css_54657401_8345693026875431468(self):
         response = self.client.get(url='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700',
                                    name='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700',
                                    timeout=30, allow_redirects=False,
-                                   headers={'Referer': 'https://alpha.nextthought.com/',
+                                   headers={'Referer': '/',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(85)
     def GET_https_fonts_googleapis_com_1413416944__css_54657401_6084668151097511295(self):
         response = self.client.get(
             url='https://fonts.googleapis.com/css?family=Droid+Serif:400,400italic,700,700italic',
             name='https://fonts.googleapis.com/css?family=Droid+Serif:400,400italic,700,700italic', timeout=30,
-            allow_redirects=False, headers={'Referer': 'https://alpha.nextthought.com/',
+            allow_redirects=False, headers={'Referer': '/',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(88)
     def GET_https_www_googletagmanager_com_2039941525__gtm_js_159580803_3434302001135428722(self):
         response = self.client.get(
@@ -283,54 +269,49 @@ class ChatTestSequence(TaskSequence):
             timeout=30, allow_redirects=False, headers={
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                 'accept': '*/*', 'sec-gpc': '1', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'no-cors',
-                'sec-fetch-dest': 'script', 'referer': 'https://alpha.nextthought.com/',
+                'sec-fetch-dest': 'script', 'referer': '/',
                 'accept-encoding': 'gzip, deflate, br', 'accept-language': 'en-US,en;q=0.9'})
 
-        
     @seq_task(93)
     def GET_https_alpha_nextthought_com_1547110500__site_assets_shared_loading_gif_3137407932_2019098557277527390(self):
-        response = self.client.get(url='https://alpha.nextthought.com/site-assets/shared/loading.gif',
-                                   name='https://alpha.nextthought.com/site-assets/shared/loading.gif', timeout=30,
-                                   allow_redirects=False, headers={'Referer': 'https://alpha.nextthought.com/app/',
+        response = self.client.get(url='/site-assets/shared/loading.gif',
+                                   name='/site-assets/shared/loading.gif', timeout=30,
+                                   allow_redirects=False, headers={'Referer': '/app/',
                                                                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(94)
     def GET_https_www_youtube_com_833029646__iframe_api_409338941_8488610866024731285(self):
         response = self.client.get(url='https://www.youtube.com/iframe_api', name='https://www.youtube.com/iframe_api',
                                    timeout=30, allow_redirects=False, headers={
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                 'accept': '*/*', 'sec-gpc': '1', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'no-cors',
-                'sec-fetch-dest': 'script', 'referer': 'https://alpha.nextthought.com/',
+                'sec-fetch-dest': 'script', 'referer': '/',
                 'accept-encoding': 'gzip, deflate, br', 'accept-language': 'en-US,en;q=0.9'})
 
-        
     @seq_task(95)
     def GET_https_alpha_nextthought_com_1547110500__site_assets_shared_strings_en_json_4015721837_254624721195774092(
             self):
-        response = self.client.get(url='https://alpha.nextthought.com/site-assets/shared/strings.en.json?r=20210619',
-                                   name='https://alpha.nextthought.com/site-assets/shared/strings.en.json?r=20210619',
+        response = self.client.get(url='/site-assets/shared/strings.en.json?r=20210619',
+                                   name='/site-assets/shared/strings.en.json?r=20210619',
                                    timeout=30, allow_redirects=False,
-                                   headers={'Referer': 'https://alpha.nextthought.com/app/',
+                                   headers={'Referer': '/app/',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(104)
     def GET_https_js_stripe_com_596837648__v3_28246233_5577686131821501168(self):
         response = self.client.get(url='https://js.stripe.com/v3', name='https://js.stripe.com/v3', timeout=30,
                                    allow_redirects=False, headers={
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                 'accept': '*/*', 'sec-gpc': '1', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'no-cors',
-                'sec-fetch-dest': 'script', 'referer': 'https://alpha.nextthought.com/',
+                'sec-fetch-dest': 'script', 'referer': '/',
                 'accept-encoding': 'gzip, deflate, br', 'accept-language': 'en-US,en;q=0.9',
                 'if-none-match': '"05f750c87e3d0b255e6462502c4c99ed"',
                 'if-modified-since': 'Mon, 19 Jul 2021 21:27:06 GMT'})
 
-        
     @seq_task(105)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_logon_ping_1740245181_7778011455454181430(self):
-        response = self.client.get(url='https://alpha.nextthought.com/dataserver2/logon.ping',
-                                   name='https://alpha.nextthought.com/dataserver2/logon.ping', timeout=30,
+        response = self.client.get(url='/dataserver2/logon.ping',
+                                   name='/dataserver2/logon.ping', timeout=30,
                                    allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'Accept': 'application/json',
@@ -338,29 +319,26 @@ class ChatTestSequence(TaskSequence):
                                             'X-NTI-Client-App': '@nti/web-app', 'X-Requested-With': 'XMLHttpRequest',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                                             'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                                            'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                                            'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                                             'Accept-Encoding': 'gzip, deflate, br',
                                             'Accept-Language': 'en-US,en;q=0.9'})
 
-        
     @seq_task(106)
     def GET_https_www_google_analytics_com_1995770227__analytics_js_574752003_8593601013100331999(self):
         response = self.client.get(url='https://www.google-analytics.com/analytics.js',
                                    name='https://www.google-analytics.com/analytics.js', timeout=30,
-                                   allow_redirects=False, headers={'Referer': 'https://alpha.nextthought.com/',
+                                   allow_redirects=False, headers={'Referer': '/',
                                                                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(107)
     def GET_https_www_youtube_com_833029646__s_player_7ba2b998_www_widgetapi_vflset_www_widgetapi_js_883037329_7852402471120783222(
             self):
         response = self.client.get(
             url='https://www.youtube.com/s/player/7ba2b998/www-widgetapi.vflset/www-widgetapi.js',
             name='https://www.youtube.com/s/player/7ba2b998/www-widgetapi.vflset/www-widgetapi.js', timeout=30,
-            allow_redirects=False, headers={'Referer': 'https://alpha.nextthought.com/',
+            allow_redirects=False, headers={'Referer': '/',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(108)
     def POST_https_o526150_ingest_sentry_io_1559562292__api_5641323_envelope__1211696829_1792430041851680835(self):
         response = self.client.post(
@@ -369,19 +347,18 @@ class ChatTestSequence(TaskSequence):
             timeout=30, allow_redirects=False, headers={'content-length': '476',
                                                         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                                                         'content-type': 'text/plain;charset=UTF-8', 'accept': '*/*',
-                                                        'sec-gpc': '1', 'origin': 'https://alpha.nextthought.com',
+                                                        'sec-gpc': '1', 'origin': '',
                                                         'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors',
                                                         'sec-fetch-dest': 'empty',
-                                                        'referer': 'https://alpha.nextthought.com/',
+                                                        'referer': '/',
                                                         'accept-encoding': 'gzip, deflate, br',
                                                         'accept-language': 'en-US,en;q=0.9'},
             data=b'{"sent_at":"2021-07-19T22:01:42.908Z","sdk":{"name":"sentry.javascript.react","version":"6.9.0"}}\n{"type":"session"}\n{"sid":"e15f061d02f049f3b84fc16dad494c17","init":true,"started":"2021-07-19T22:01:42.906Z","timestamp":"2021-07-19T22:01:42.906Z","status":"ok","errors":0,"attrs":{"release":"web-app@2021.9.0-alpha","environment":"alpha","user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"}}')
 
-        
     @seq_task(109)
     def POST_https_alpha_nextthought_com_1547110500__dataserver2_logon_handshake_2567834294_1907361493870384568(self):
-        response = self.client.post(url='https://alpha.nextthought.com/dataserver2/logon.handshake',
-                                    name='https://alpha.nextthought.com/dataserver2/logon.handshake', timeout=30,
+        response = self.client.post(url='/dataserver2/logon.handshake',
+                                    name='/dataserver2/logon.handshake', timeout=30,
                                     allow_redirects=False,
                                     headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                              'Content-Length': '24', 'Accept': 'application/json',
@@ -389,14 +366,14 @@ class ChatTestSequence(TaskSequence):
                                              'X-NTI-Client-App': '@nti/web-app', 'X-Requested-With': 'XMLHttpRequest',
                                              'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                                              'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                                             'Sec-GPC': '1', 'Origin': 'https://alpha.nextthought.com',
+                                             'Sec-GPC': '1', 'Origin': '',
                                              'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                                             'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                                             'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                                              'Accept-Encoding': 'gzip, deflate, br',
-                                             'Accept-Language': 'en-US,en;q=0.9'}, data=f'username=stress.tester{self.user_id}',
+                                             'Accept-Language': 'en-US,en;q=0.9'},
+                                    data=f'username=stress.tester{self.user_id}',
                                     params=[(b'username', f'stress.tester{self.user_id}')])
 
-        
     @seq_task(110)
     def GET_https_www_google_analytics_com_1995770227__collect_218366742_4803116806606835180(self):
         response = self.client.get(
@@ -406,14 +383,13 @@ class ChatTestSequence(TaskSequence):
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                 'accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8', 'sec-gpc': '1',
                 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'no-cors', 'sec-fetch-dest': 'image',
-                'referer': 'https://alpha.nextthought.com/', 'accept-encoding': 'gzip, deflate, br',
+                'referer': '/', 'accept-encoding': 'gzip, deflate, br',
                 'accept-language': 'en-US,en;q=0.9'})
 
-        
     @seq_task(111)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_logon_ping_1740245181_2105672447857621983(self):
-        response = self.client.get(url='https://alpha.nextthought.com/dataserver2/logon.ping',
-                                   name='https://alpha.nextthought.com/dataserver2/logon.ping', timeout=30,
+        response = self.client.get(url='/dataserver2/logon.ping',
+                                   name='/dataserver2/logon.ping', timeout=30,
                                    allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'X-NTI-Client-TZOffset': '-300', 'X-NTI-Client-Timezone': 'America/Chicago',
@@ -423,15 +399,14 @@ class ChatTestSequence(TaskSequence):
                                             'X-NTI-Client-App': '@nti/web-app', 'x-requested-with': 'XMLHttpRequest',
                                             'sentry-trace': '88c3b559f4ed4673951969bb79187246-996fa016b522ae45-0',
                                             'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                                            'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                                            'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                                             'Accept-Encoding': 'gzip, deflate, br',
                                             'Accept-Language': 'en-US,en;q=0.9'})
 
-        
     @seq_task(113)
     def POST_https_alpha_nextthought_com_1547110500__dataserver2_logon_handshake_2567834294_566899760508220044(self):
-        response = self.client.post(url='https://alpha.nextthought.com/dataserver2/logon.handshake',
-                                    name='https://alpha.nextthought.com/dataserver2/logon.handshake', timeout=30,
+        response = self.client.post(url='/dataserver2/logon.handshake',
+                                    name='/dataserver2/logon.handshake', timeout=30,
                                     allow_redirects=False,
                                     headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                              'Content-Length': '154', 'X-NTI-Client-TZOffset': '-300',
@@ -442,19 +417,18 @@ class ChatTestSequence(TaskSequence):
                                              'X-NTI-Client-Version': '2021.9.0-alpha.20210719193700',
                                              'X-NTI-Client-App': '@nti/web-app', 'x-requested-with': 'XMLHttpRequest',
                                              'sentry-trace': '88c3b559f4ed4673951969bb79187246-a6a2cf28b1f3e930-0',
-                                             'Sec-GPC': '1', 'Origin': 'https://alpha.nextthought.com',
+                                             'Sec-GPC': '1', 'Origin': '',
                                              'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                                             'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                                             'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                                              'Accept-Encoding': 'gzip, deflate, br',
                                              'Accept-Language': 'en-US,en;q=0.9'},
                                     data=f'------WebKitFormBoundarySThYPhBdqd5Oc06J\r\nContent-Disposition: form-data; name="username"\r\n\r\nstress.tester{self.user_id}\r\n------WebKitFormBoundarySThYPhBdqd5Oc06J--\r\n',
                                     params=[(b'username', f'stress.tester{self.user_id}')])
 
-        
     @seq_task(114)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_service_1331103667_1886242017472602048(self):
-        response = self.client.get(url='https://alpha.nextthought.com/dataserver2/service',
-                                   name='https://alpha.nextthought.com/dataserver2/service', timeout=30,
+        response = self.client.get(url='/dataserver2/service',
+                                   name='/dataserver2/service', timeout=30,
                                    allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'X-NTI-Client-TZOffset': '-300', 'X-NTI-Client-Timezone': 'America/Chicago',
@@ -464,17 +438,15 @@ class ChatTestSequence(TaskSequence):
                                             'X-NTI-Client-App': '@nti/web-app', 'x-requested-with': 'XMLHttpRequest',
                                             'sentry-trace': '88c3b559f4ed4673951969bb79187246-b6922de76c6d7841-0',
                                             'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                                            'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                                            'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                                             'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                                             'If-None-Match': '"BleYXgpJSjr4KJbJ0dmzrA./gz"'})
-
-        
 
     @seq_task(116)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_3828092149_9195707057299489697(
             self):
-        response = self.client.get(url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}',
-                                   name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}', timeout=30,
+        response = self.client.get(url=f'/dataserver2/users/stress.tester{self.user_id}',
+                                   name=f'/dataserver2/users/stress.tester{self.user_id}', timeout=30,
                                    allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'X-NTI-Client-TZOffset': '-300', 'X-NTI-Client-Timezone': 'America/Chicago',
@@ -484,16 +456,16 @@ class ChatTestSequence(TaskSequence):
                                             'X-NTI-Client-App': '@nti/web-app', 'x-requested-with': 'XMLHttpRequest',
                                             'sentry-trace': '88c3b559f4ed4673951969bb79187246-9cd5ddd7698c0e71-0',
                                             'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                                            'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                                            'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                                             'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                                             'If-None-Match': '"2mOIHaDP4tk2BWPkAublmQ./gz"',
                                             'If-Modified-Since': 'Wed, 20 Mar 2019 21:31:49 GMT'})
-        
+
     @seq_task(119)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_3828092149_1925153541569642390(
             self):
-        response = self.client.get(url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}',
-                                   name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}', timeout=30,
+        response = self.client.get(url=f'/dataserver2/users/stress.tester{self.user_id}',
+                                   name=f'/dataserver2/users/stress.tester{self.user_id}', timeout=30,
                                    allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'Accept': 'application/json',
@@ -501,46 +473,43 @@ class ChatTestSequence(TaskSequence):
                                             'X-NTI-Client-App': '@nti/web-app', 'X-Requested-With': 'XMLHttpRequest',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                                             'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                                            'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                                            'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                                             'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                                             'If-None-Match': '"PZqcqkLR2eMIXg5+O8KuBA./gz"',
                                             'If-Modified-Since': 'Wed, 20 Mar 2019 21:31:49 GMT'})
 
-        
     @seq_task(120)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54___preferences___WebApp_1781142736_120990772562390043(
             self):
         response = self.client.get(
-            url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/++preferences++/WebApp',
-            name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/++preferences++/WebApp', timeout=30,
+            url=f'/dataserver2/users/stress.tester{self.user_id}/++preferences++/WebApp',
+            name=f'/dataserver2/users/stress.tester{self.user_id}/++preferences++/WebApp', timeout=30,
             allow_redirects=False,
             headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'Accept': 'application/json',
                      'X-NTI-Client-Version': '2021.9.0-alpha.20210719193700', 'X-NTI-Client-App': '@nti/web-app',
                      'X-Requested-With': 'XMLHttpRequest',
                      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                      'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                     'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                     'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                      'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                      'If-None-Match': '"f03ChAWT4Yotvn2ekRJbMw./gz"'})
 
-        
     @seq_task(122)
     def GET_https_alpha_nextthought_com_1547110500__site_assets_shared_strings_en_json_4015721837_1339698807623015960(
             self):
-        response = self.client.get(url='https://alpha.nextthought.com/site-assets/shared/strings.en.json?r=20210619',
-                                   name='https://alpha.nextthought.com/site-assets/shared/strings.en.json?r=20210619',
+        response = self.client.get(url='/site-assets/shared/strings.en.json?r=20210619',
+                                   name='/site-assets/shared/strings.en.json?r=20210619',
                                    timeout=30, allow_redirects=False,
-                                   headers={'Referer': 'https://alpha.nextthought.com/app/',
+                                   headers={'Referer': '/app/',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                                             'sentry-trace': '88c3b559f4ed4673951969bb79187246-89c257c96df3b0d0-0'})
 
-        
     @seq_task(123)
     def POST_https_alpha_nextthought_com_1547110500__dataserver2_analytics_sessions___analytics_session_4266071050_8867817190417970004(
             self):
         response = self.client.post(
-            url='https://alpha.nextthought.com/dataserver2/analytics/sessions/@@analytics_session',
-            name='https://alpha.nextthought.com/dataserver2/analytics/sessions/@@analytics_session', timeout=30,
+            url='/dataserver2/analytics/sessions/@@analytics_session',
+            name='/dataserver2/analytics/sessions/@@analytics_session', timeout=30,
             allow_redirects=False,
             headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'Content-Length': '2',
                      'X-NTI-Client-TZOffset': '-300', 'X-NTI-Client-Timezone': 'America/Chicago',
@@ -549,17 +518,16 @@ class ChatTestSequence(TaskSequence):
                      'X-NTI-Client-Version': '2021.9.0-alpha.20210719193700', 'X-NTI-Client-App': '@nti/web-app',
                      'x-requested-with': 'XMLHttpRequest',
                      'sentry-trace': '88c3b559f4ed4673951969bb79187246-87bdde128f273766-0', 'Sec-GPC': '1',
-                     'Origin': 'https://alpha.nextthought.com', 'Sec-Fetch-Site': 'same-origin',
+                     'Origin': '', 'Sec-Fetch-Site': 'same-origin',
                      'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty',
-                     'Referer': 'https://alpha.nextthought.com/app/', 'Accept-Encoding': 'gzip, deflate, br',
+                     'Referer': '/app/', 'Accept-Encoding': 'gzip, deflate, br',
                      'Accept-Language': 'en-US,en;q=0.9'}, json={})
 
-        
     @seq_task(124)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_Groups_1216941988_8607652294183646853(
             self):
-        response = self.client.get(url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Groups',
-                                   name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Groups',
+        response = self.client.get(url=f'/dataserver2/users/stress.tester{self.user_id}/Groups',
+                                   name=f'/dataserver2/users/stress.tester{self.user_id}/Groups',
                                    timeout=30, allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'Accept': 'application/vnd.nextthought.collection+json',
@@ -568,16 +536,15 @@ class ChatTestSequence(TaskSequence):
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                                             'Content-Type': 'application/vnd.nextthought.friendslist+json',
                                             'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                                            'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                                            'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                                             'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                                             'If-None-Match': '"wb/N2yEJAn8p367u+FSOPg./gz"'})
 
-        
     @seq_task(128)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_FriendsLists_2912293374_8729666224395486155(
             self):
-        response = self.client.get(url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/FriendsLists',
-                                   name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/FriendsLists',
+        response = self.client.get(url=f'/dataserver2/users/stress.tester{self.user_id}/FriendsLists',
+                                   name=f'/dataserver2/users/stress.tester{self.user_id}/FriendsLists',
                                    timeout=30, allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'X-NTI-Client-TZOffset': '-300', 'X-NTI-Client-Timezone': 'America/Chicago',
@@ -587,36 +554,33 @@ class ChatTestSequence(TaskSequence):
                                             'X-NTI-Client-App': '@nti/web-app', 'x-requested-with': 'XMLHttpRequest',
                                             'sentry-trace': '88c3b559f4ed4673951969bb79187246-b2f04ba082060de1-0',
                                             'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                                            'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                                            'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                                             'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                                             'If-None-Match': '"8kEtAL21MfnqIp7XaLu11A./gz"'})
 
-        
     @seq_task(130)
     def GET_https_alpha_nextthought_com_1547110500__site_assets_shared_brand_web_png_3555724433_790952376092969288(
             self):
-        response = self.client.get(url='https://alpha.nextthought.com/site-assets/shared/brand_web.png',
-                                   name='https://alpha.nextthought.com/site-assets/shared/brand_web.png', timeout=30,
-                                   allow_redirects=False, headers={'Referer': 'https://alpha.nextthought.com/app/',
+        response = self.client.get(url='/site-assets/shared/brand_web.png',
+                                   name='/site-assets/shared/brand_web.png', timeout=30,
+                                   allow_redirects=False, headers={'Referer': '/app/',
                                                                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(131)
     def GET_https_alpha_nextthought_com_1547110500__site_assets_shared_brand_web_library_png_1221791717_4973018536576895680(
             self):
-        response = self.client.get(url='https://alpha.nextthought.com/site-assets/shared/brand_web_library.png',
-                                   name='https://alpha.nextthought.com/site-assets/shared/brand_web_library.png',
+        response = self.client.get(url='/site-assets/shared/brand_web_library.png',
+                                   name='/site-assets/shared/brand_web_library.png',
                                    timeout=30, allow_redirects=False,
-                                   headers={'Referer': 'https://alpha.nextthought.com/app/',
+                                   headers={'Referer': '/app/',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(132)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54___preferences____4078375569_2307557827360113546(
             self):
         response = self.client.get(
-            url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/++preferences++/',
-            name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/++preferences++/', timeout=30,
+            url=f'/dataserver2/users/stress.tester{self.user_id}/++preferences++/',
+            name=f'/dataserver2/users/stress.tester{self.user_id}/++preferences++/', timeout=30,
             allow_redirects=False,
             headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'X-NTI-Client-TZOffset': '-300',
                      'X-NTI-Client-Timezone': 'America/Chicago',
@@ -625,15 +589,14 @@ class ChatTestSequence(TaskSequence):
                      'X-NTI-Client-App': '@nti/web-app', 'x-requested-with': 'XMLHttpRequest',
                      'sentry-trace': '88c3b559f4ed4673951969bb79187246-ae0a3810c4ee9699-0', 'Sec-GPC': '1',
                      'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty',
-                     'Referer': 'https://alpha.nextthought.com/app/', 'Accept-Encoding': 'gzip, deflate, br',
+                     'Referer': '/app/', 'Accept-Encoding': 'gzip, deflate, br',
                      'Accept-Language': 'en-US,en;q=0.9', 'If-None-Match': '"MW56je1VDya6/SLBloxeqA./gz"'})
 
-        
     @seq_task(133)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_ResolveUser_stress_tester54_965807938_7387135907902839107(
             self):
-        response = self.client.get(url=f'https://alpha.nextthought.com/dataserver2/ResolveUser/stress.tester{self.user_id}',
-                                   name=f'https://alpha.nextthought.com/dataserver2/ResolveUser/stress.tester{self.user_id}',
+        response = self.client.get(url=f'/dataserver2/ResolveUser/stress.tester{self.user_id}',
+                                   name=f'/dataserver2/ResolveUser/stress.tester{self.user_id}',
                                    timeout=30, allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'X-NTI-Client-TZOffset': '-300', 'X-NTI-Client-Timezone': 'America/Chicago',
@@ -643,17 +606,16 @@ class ChatTestSequence(TaskSequence):
                                             'X-NTI-Client-App': '@nti/web-app', 'x-requested-with': 'XMLHttpRequest',
                                             'sentry-trace': '88c3b559f4ed4673951969bb79187246-bb7b3a1122dfe4d8-0',
                                             'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                                            'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                                            'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                                             'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                                             'If-None-Match': '"KBSC/3SjO7Pmib7y0T70Cg./gz"'})
 
-        
     @seq_task(134)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_Objects_tag_3Anextthought_com_2C2011_10_3ARoot_2028016616_3832111969442462536(
             self):
         response = self.client.get(
-            url='https://alpha.nextthought.com/dataserver2/Objects/tag%3Anextthought.com%2C2011-10%3ARoot?type=application%2Fvnd.nextthought.pageinfo%2Bjson',
-            name='https://alpha.nextthought.com/dataserver2/Objects/tag%3Anextthought.com%2C2011-10%3ARoot?type=application%2Fvnd.nextthought.pageinfo%2Bjson',
+            url='/dataserver2/Objects/tag%3Anextthought.com%2C2011-10%3ARoot?type=application%2Fvnd.nextthought.pageinfo%2Bjson',
+            name='/dataserver2/Objects/tag%3Anextthought.com%2C2011-10%3ARoot?type=application%2Fvnd.nextthought.pageinfo%2Bjson',
             timeout=30, allow_redirects=False,
             headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'X-NTI-Client-TZOffset': '-300',
                      'X-NTI-Client-Timezone': 'America/Chicago',
@@ -663,16 +625,15 @@ class ChatTestSequence(TaskSequence):
                      'x-requested-with': 'XMLHttpRequest',
                      'sentry-trace': '88c3b559f4ed4673951969bb79187246-abd72a094e48b7e6-0', 'Sec-GPC': '1',
                      'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty',
-                     'Referer': 'https://alpha.nextthought.com/app/', 'Accept-Encoding': 'gzip, deflate, br',
+                     'Referer': '/app/', 'Accept-Encoding': 'gzip, deflate, br',
                      'Accept-Language': 'en-US,en;q=0.9', 'If-None-Match': '"9I+ij5PsGi1Rk6bgxq2pCw./gz"'})
 
-        
     @seq_task(135)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_Calendars___events_488379381_8771484786622540027(
             self):
         response = self.client.get(
-            url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Calendars/@@events?batchSize=1&notAfter=1626757199.961&notBefore=1626732103.961',
-            name='fhttps://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Calendars/@@events?batchSize=1&notAfter=1626757199.961&notBefore=1626732103.961',
+            url=f'/dataserver2/users/stress.tester{self.user_id}/Calendars/@@events?batchSize=1&notAfter=1626757199.961&notBefore=1626732103.961',
+            name='f/dataserver2/users/stress.tester{self.user_id}/Calendars/@@events?batchSize=1&notAfter=1626757199.961&notBefore=1626732103.961',
             timeout=30, allow_redirects=False,
             headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'X-NTI-Client-TZOffset': '-300',
                      'X-NTI-Client-Timezone': 'America/Chicago',
@@ -681,16 +642,15 @@ class ChatTestSequence(TaskSequence):
                      'X-NTI-Client-App': '@nti/web-app', 'x-requested-with': 'XMLHttpRequest',
                      'sentry-trace': '88c3b559f4ed4673951969bb79187246-ac97d77b84e7600b-0', 'Sec-GPC': '1',
                      'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty',
-                     'Referer': 'https://alpha.nextthought.com/app/', 'Accept-Encoding': 'gzip, deflate, br',
+                     'Referer': '/app/', 'Accept-Encoding': 'gzip, deflate, br',
                      'Accept-Language': 'en-US,en;q=0.9'})
 
-        
     @seq_task(136)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_Courses_EnrolledCourses___Favorites_2963806898_201694827742107932(
             self):
         response = self.client.get(
-            url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Courses/EnrolledCourses/@@Favorites',
-            name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Courses/EnrolledCourses/@@Favorites',
+            url=f'/dataserver2/users/stress.tester{self.user_id}/Courses/EnrolledCourses/@@Favorites',
+            name=f'/dataserver2/users/stress.tester{self.user_id}/Courses/EnrolledCourses/@@Favorites',
             timeout=30, allow_redirects=False,
             headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'X-NTI-Client-TZOffset': '-300',
                      'X-NTI-Client-Timezone': 'America/Chicago',
@@ -699,16 +659,15 @@ class ChatTestSequence(TaskSequence):
                      'X-NTI-Client-App': '@nti/web-app', 'x-requested-with': 'XMLHttpRequest',
                      'sentry-trace': '88c3b559f4ed4673951969bb79187246-8d7662950b25c549-0', 'Sec-GPC': '1',
                      'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty',
-                     'Referer': 'https://alpha.nextthought.com/app/', 'Accept-Encoding': 'gzip, deflate, br',
+                     'Referer': '/app/', 'Accept-Encoding': 'gzip, deflate, br',
                      'Accept-Language': 'en-US,en;q=0.9', 'If-None-Match': '"LqAieJCTPbR3AFU5rHZeHQ./gz"'})
 
-        
     @seq_task(137)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_Courses_AdministeredCourses___Favorites_558111830_232132943329694417(
             self):
         response = self.client.get(
-            url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Courses/AdministeredCourses/@@Favorites',
-            name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Courses/AdministeredCourses/@@Favorites',
+            url=f'/dataserver2/users/stress.tester{self.user_id}/Courses/AdministeredCourses/@@Favorites',
+            name=f'/dataserver2/users/stress.tester{self.user_id}/Courses/AdministeredCourses/@@Favorites',
             timeout=30, allow_redirects=False,
             headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'X-NTI-Client-TZOffset': '-300',
                      'X-NTI-Client-Timezone': 'America/Chicago',
@@ -717,20 +676,19 @@ class ChatTestSequence(TaskSequence):
                      'X-NTI-Client-App': '@nti/web-app', 'x-requested-with': 'XMLHttpRequest',
                      'sentry-trace': '88c3b559f4ed4673951969bb79187246-ba2e4a1b9edbdbfc-0', 'Sec-GPC': '1',
                      'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty',
-                     'Referer': 'https://alpha.nextthought.com/app/', 'Accept-Encoding': 'gzip, deflate, br',
+                     'Referer': '/app/', 'Accept-Encoding': 'gzip, deflate, br',
                      'Accept-Language': 'en-US,en;q=0.9', 'If-None-Match': '"J05i/GWYl9TV7Bt6eG642Q./gz"'})
 
-        
     @seq_task(138)
     def GET_https_alpha_nextthought_com_1547110500__socket_io_1__545850446_5855086483001245498(self):
-        response = self.client.get(url='https://alpha.nextthought.com/socket.io/1/?t=1626732103981',
-                                   name='https://alpha.nextthought.com/socket.io/1/?t=1626732103981', timeout=30,
+        response = self.client.get(url='/socket.io/1/?t=1626732103981',
+                                   name='/socket.io/1/?t=1626732103981', timeout=30,
                                    allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                                             'Accept': '*/*', 'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin',
                                             'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty',
-                                            'Referer': 'https://alpha.nextthought.com/app/',
+                                            'Referer': '/app/',
                                             'Accept-Encoding': 'gzip, deflate, br',
                                             'Accept-Language': 'en-US,en;q=0.9'})
         """print(response.text)
@@ -738,14 +696,12 @@ class ChatTestSequence(TaskSequence):
         """
         self.socket_id = response.text.split(':')[0]
 
-
-        
     @seq_task(139)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_ContentBundles_VisibleContentBundles_3500743537_3893430521912100253(
             self):
         response = self.client.get(
-            url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/ContentBundles/VisibleContentBundles',
-            name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/ContentBundles/VisibleContentBundles',
+            url=f'/dataserver2/users/stress.tester{self.user_id}/ContentBundles/VisibleContentBundles',
+            name=f'/dataserver2/users/stress.tester{self.user_id}/ContentBundles/VisibleContentBundles',
             timeout=30, allow_redirects=False,
             headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'accept': 'application/json',
                      'X-NTI-Client-TZOffset': '-300', 'X-NTI-Client-Version': '2021.9.0-alpha.20210719193700',
@@ -753,17 +709,16 @@ class ChatTestSequence(TaskSequence):
                      'X-NTI-Client-Timezone': 'America/Chicago',
                      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                      'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                     'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                     'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                      'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                      'If-None-Match': '"0Cf3KYSx3iqRU1rrVpKPvA./gz"'})
 
-        
     @seq_task(140)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_Communities_Communities_2375685741_1510890742925860862(
             self):
         response = self.client.get(
-            url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Communities/Communities',
-            name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Communities/Communities', timeout=30,
+            url=f'/dataserver2/users/stress.tester{self.user_id}/Communities/Communities',
+            name=f'/dataserver2/users/stress.tester{self.user_id}/Communities/Communities', timeout=30,
             allow_redirects=False,
             headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'accept': 'application/json',
                      'X-NTI-Client-TZOffset': '-300', 'X-NTI-Client-Version': '2021.9.0-alpha.20210719193700',
@@ -771,18 +726,17 @@ class ChatTestSequence(TaskSequence):
                      'X-NTI-Client-Timezone': 'America/Chicago',
                      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                      'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                     'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                     'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                      'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                      'If-None-Match': '"qCM2G5UDeRTVv0Oyim5MRQ./gz"',
                      'If-Modified-Since': 'Mon, 19 Jul 2021 20:34:49 GMT'})
 
-        
     @seq_task(141)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_Pages_tag_nextthought_com_2011_10_Root__RUGDByOthersThatIMightBeInterestedIn_lastViewed_2917280902_6059418058343840684(
             self):
         response = self.client.get(
-            url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Pages(tag:nextthought.com,2011-10:Root)/RUGDByOthersThatIMightBeInterestedIn/lastViewed',
-            name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Pages(tag:nextthought.com,2011-10:Root)/RUGDByOthersThatIMightBeInterestedIn/lastViewed',
+            url=f'/dataserver2/users/stress.tester{self.user_id}/Pages(tag:nextthought.com,2011-10:Root)/RUGDByOthersThatIMightBeInterestedIn/lastViewed',
+            name=f'/dataserver2/users/stress.tester{self.user_id}/Pages(tag:nextthought.com,2011-10:Root)/RUGDByOthersThatIMightBeInterestedIn/lastViewed',
             timeout=30, allow_redirects=False,
             headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'accept': 'application/json',
                      'X-NTI-Client-TZOffset': '-300', 'X-NTI-Client-Version': '2021.9.0-alpha.20210719193700',
@@ -790,17 +744,16 @@ class ChatTestSequence(TaskSequence):
                      'X-NTI-Client-Timezone': 'America/Chicago',
                      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                      'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                     'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                     'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                      'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                      'If-None-Match': '"2DpIXiw72eOeFzxE47CFIw./gz"',
                      'If-Modified-Since': 'Mon, 19 Jul 2021 19:11:22 GMT'})
 
-        
     @seq_task(142)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_FriendsLists_2912293374_2129626188577088194(
             self):
-        response = self.client.get(url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/FriendsLists',
-                                   name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/FriendsLists',
+        response = self.client.get(url=f'/dataserver2/users/stress.tester{self.user_id}/FriendsLists',
+                                   name=f'/dataserver2/users/stress.tester{self.user_id}/FriendsLists',
                                    timeout=30, allow_redirects=False,
                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
                                             'Accept': 'application/vnd.nextthought.collection+json',
@@ -809,25 +762,23 @@ class ChatTestSequence(TaskSequence):
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                                             'Content-Type': 'application/vnd.nextthought.friendslist+json',
                                             'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                                            'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                                            'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                                             'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                                             'If-None-Match': '"8kEtAL21MfnqIp7XaLu11A./gz"'})
 
-        
     @seq_task(143)
     def GET_https_alpha_nextthought_com_1547110500__favicon_ico_477561983_6051586040812212346(self):
-        response = self.client.get(url='https://alpha.nextthought.com/favicon.ico',
-                                   name='https://alpha.nextthought.com/favicon.ico', timeout=30, allow_redirects=False,
-                                   headers={'Referer': 'https://alpha.nextthought.com/app/',
+        response = self.client.get(url='/favicon.ico',
+                                   name='/favicon.ico', timeout=30, allow_redirects=False,
+                                   headers={'Referer': '/app/',
                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
 
-        
     @seq_task(144)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_Communities_AdministeredCommunities_3089374022_5980329889907028765(
             self):
         response = self.client.get(
-            url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Communities/AdministeredCommunities',
-            name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Communities/AdministeredCommunities',
+            url=f'/dataserver2/users/stress.tester{self.user_id}/Communities/AdministeredCommunities',
+            name=f'/dataserver2/users/stress.tester{self.user_id}/Communities/AdministeredCommunities',
             timeout=30, allow_redirects=False,
             headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'accept': 'application/json',
                      'X-NTI-Client-TZOffset': '-300', 'X-NTI-Client-Version': '2021.9.0-alpha.20210719193700',
@@ -835,17 +786,16 @@ class ChatTestSequence(TaskSequence):
                      'X-NTI-Client-Timezone': 'America/Chicago',
                      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                      'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                     'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                     'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                      'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                      'If-None-Match': '"av85WlNkXRnamlWSbolxQA./gz"'})
 
-        
     @seq_task(145)
     def GET_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester54_Pages_tag_nextthought_com_2011_10_Root__RUGDByOthersThatIMightBeInterestedIn_3664586815_956732477210648484(
             self):
         response = self.client.get(
-            url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Pages(tag:nextthought.com,2011-10:Root)/RUGDByOthersThatIMightBeInterestedIn?batchSize=10&batchStart=0',
-            name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/Pages(tag:nextthought.com,2011-10:Root)/RUGDByOthersThatIMightBeInterestedIn?batchSize=10&batchStart=0',
+            url=f'/dataserver2/users/stress.tester{self.user_id}/Pages(tag:nextthought.com,2011-10:Root)/RUGDByOthersThatIMightBeInterestedIn?batchSize=10&batchStart=0',
+            name=f'/dataserver2/users/stress.tester{self.user_id}/Pages(tag:nextthought.com,2011-10:Root)/RUGDByOthersThatIMightBeInterestedIn?batchSize=10&batchStart=0',
             timeout=30, allow_redirects=False,
             headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'accept': 'application/json',
                      'X-NTI-Client-TZOffset': '-300', 'X-NTI-Client-Version': '2021.9.0-alpha.20210719193700',
@@ -853,53 +803,58 @@ class ChatTestSequence(TaskSequence):
                      'X-NTI-Client-Timezone': 'America/Chicago',
                      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                      'Sec-GPC': '1', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
-                     'Sec-Fetch-Dest': 'empty', 'Referer': 'https://alpha.nextthought.com/app/',
+                     'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
                      'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9',
                      'If-None-Match': '"Ug7MBBOHlDEUFxanIvGcXQ./gz"',
                      'If-Modified-Since': 'Thu, 15 Jul 2021 21:54:17 GMT'})
+
     """
-    @seq_task(166)
-    def DELETE_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester73___NamedLinks_content_initial_tos_page_3739556734_8779724295116124966(
+    @seq_task(146)
+    def POST_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester73_FriendsLists_2913341951_382001698497351934(
             self):
-        response = self.client.delete(
-            url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/@@NamedLinks/content.initial_tos_page',
-            name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/@@NamedLinks/content.initial_tos_page',
-            timeout=30, allow_redirects=False,
-            headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'Accept': 'application/json',
-                     'X-NTI-Client-Version': '2021.12.0-alpha.20210923190802', 'X-NTI-Client-App': '@nti/web-app',
-                     'X-Requested-With': 'XMLHttpRequest',
-                     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
-                     'Sec-GPC': '1', 'Origin': 'https://alpha.nextthought.com', 'Sec-Fetch-Site': 'same-origin',
-                     'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty',
-                     'Referer': 'https://alpha.nextthought.com/app/', 'Accept-Encoding': 'gzip, deflate, br',
-                     'Accept-Language': 'en-US,en;q=0.9'})
+        response = self.client.post(url=f'/dataserver2/users/stress.tester{self.user_id}/FriendsLists',
+                                    name=f'/dataserver2/users/stress.tester{self.user_id}/FriendsLists',
+                                    timeout=30, allow_redirects=False,
+                                    headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive',
+                                             'Content-Length': '154', 'X-NTI-Client-TZOffset': '-300',
+                                             'X-NTI-Client-Timezone': 'America/Chicago',
+                                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+                                             'Content-Type': 'application/json', 'accept': 'application/json',
+                                             'X-NTI-Client-Version': '2021.12.0-alpha.20210923190802',
+                                             'X-NTI-Client-App': '@nti/web-app', 'x-requested-with': 'XMLHttpRequest',
+                                             'Sec-GPC': '1', 'Origin': '',
+                                             'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors',
+                                             'Sec-Fetch-Dest': 'empty', 'Referer': '/app/',
+                                             'Accept-Encoding': 'gzip, deflate, br',
+                                             'Accept-Language': 'en-US,en;q=0.9'},
+                                    json={'MimeType': 'application/vnd.nextthought.friendslist',
+                                          'Username': f'mycontacts-stress.tester{self.user_id}', 'alias': 'My Contacts',
+                                          'friends': [], 'IsDynamicSharing': False})
         time.sleep(8)
-    """
+        """
 
     @seq_task(264)
     def PUT_https_alpha_nextthought_com_1547110500__dataserver2_users_stress_tester93_FriendsLists_mycontacts_stress_tester93_691346551_3524686157509020090(
             self):
         time.sleep(10)
 
-        self.group_size = 10
-        """
-        num_groups = 10
+        # num_groups = 10
 
-        new_friends_list = []
-        new_friends_list_string = ''
-        for x in range(1, num_groups + 1):
-            new_friends_list.append(f"stress.tester{self.user_id + (group_size * x) - (self.user_id % group_size)}")
+        # new_friends_list = []
+        # new_friends_list_string = ''
+        # for x in range(1, num_groups + 1):
+        #     new_friends_list.append(f"stress.tester{self.user_id + (group_size * x) - (self.user_id % group_size)}")
 
-        print(new_friends_list)
-        """
+        # print(new_friends_list)
+
         self.target_id = self.user_id + self.group_size - (self.user_id % self.group_size)
         self.target = f"stress.tester{self.target_id}"
         new_friends_list = [self.target]
-
-        if(self.user_id % self.group_size == 0):
+        """
+        if(self.user_id % self.group_size != 0):
             response = self.client.put(
-                url=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/FriendsLists/mycontacts-stress.tester{self.user_id}',
-                name=f'https://alpha.nextthought.com/dataserver2/users/stress.tester{self.user_id}/FriendsLists/mycontacts-stress.tester{self.user_id}',
+                url=f'/dataserver2/users/stress.tester{self.user_id}/FriendsLists/mycontacts-stress.tester{self.user_id}',
+                name=f'/dataserver2/users/stress.tester{self.user_id}/FriendsLists/mycontacts-stress.tester{self.user_id}',
                 timeout=30, allow_redirects=False,
                 headers={'Host': 'alpha.nextthought.com', 'Connection': 'keep-alive', 'Content-Length': '836',
                          'X-NTI-Client-TZOffset': '-300', 'X-NTI-Client-Timezone': 'America/Chicago',
@@ -907,9 +862,9 @@ class ChatTestSequence(TaskSequence):
                          'Content-Type': 'application/json', 'accept': 'application/json',
                          'X-NTI-Client-Version': '2021.12.0-alpha.20210922202435', 'X-NTI-Client-App': '@nti/web-app',
                          'x-requested-with': 'XMLHttpRequest', 'Sec-GPC': '1',
-                         'Origin': 'https://alpha.nextthought.com', 'Sec-Fetch-Site': 'same-origin',
+                         'Origin': '', 'Sec-Fetch-Site': 'same-origin',
                          'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty',
-                         'Referer': 'https://alpha.nextthought.com/app/user/stress.tester91',
+                         'Referer': '/app/user/stress.tester91',
                          'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9'},
                 json={'Creator': f'stress.tester{self.user_id}', 'CreatedTime': 1632344251.669365,
                       'Last Modified': 1632344251.670834,
@@ -926,7 +881,7 @@ class ChatTestSequence(TaskSequence):
 
 
 
-
+        """
 
     @seq_task(147)
     def GET_wss_alpha_nextthought_com_1547110500__socket_io_1_websocket_sessionid_635440412_6214409689335893478(self):
@@ -942,29 +897,40 @@ class ChatTestSequence(TaskSequence):
                                               cookie=cookie_string,
                                               sslopt={"cert_reqs": ssl.CERT_NONE})
 
-        # if current user is a target print out received messages
+        # if current user is a target wait to receive messages, then print them out
+        messages_received = 0
+        iterations = 0
         if self.user_id % self.group_size == 0:
-            print(f"stress.tester{self.user_id} connected to websocket. Receiving messages...")
             time.sleep(self.group_size * 1.2)
-            receiving = True
-            while receiving:
-                incoming_message = self.ws.recv()
-                if incoming_message is None:
-                    print("Did not get a message back from the websocket")
-                    break
-                if "locustTest" in incoming_message:
-                    print(f"stress.tester{self.user_id} received message: {incoming_message}")
+            while messages_received < self.group_size - 1:
+                print(f"stress.tester{self.user_id} connected to websocket. Receiving messages...")
+                receiving = True
+                while receiving:
+                    incoming_message = self.ws.recv()
+                    if incoming_message is None:
+                        print("Did not get a message back from the websocket")
+                        break
+                    if "locustTest" in incoming_message:
+                        print(f"stress.tester{self.user_id} received message: {incoming_message}")
+                        messages_received += 1
+                time.sleep(5)
+                iterations += 1
+                if iterations > 5 * self.group_size:
+                    print(f"Expected {self.group_size - 1} messages, received {messages_received} messages.")
 
         # send message to target
         else:
 
-
             print(f"stress.tester{self.user_id} connected to websocket. Sending message...")
+
+            # set status to available
             self.ws.send(
                 f'5:1+::{{"name":"chat_setPresence","args":[{{"MimeType":"application/vnd.nextthought.presenceinfo","username":"stress.tester{self.user_id}","type":"available","show":"chat","status":"Available"}}]}}')
+            # join chat room
             self.ws.send(
                 f'5:2+::{{"name":"chat_enterRoom","args":[{{"Occupants":["{self.target}","stress.tester{self.user_id}"],"ContainerId":"tag:nextthought.com,2011-10:Root"}}]}}')
 
+            # parse ID of target user
             incoming_message = ""
             receiving = True
             while receiving:
@@ -978,11 +944,15 @@ class ChatTestSequence(TaskSequence):
             OID_start = incoming_message.find("OID-")
             OID_end = incoming_message.find("\"", OID_start)
             OID = incoming_message[OID_start + 4:OID_end]
+
+            # Send composing state
             self.ws.send(
                 f'5:3+::{{"name":"chat_postMessage","args":[{{"Class":"MessageInfo","ContainerId":"tag:nextthought.com,2011-10:stress.tester{self.user_id}-OID-{OID}","body":{{"state":"composing"}},"channel":"STATE"}}]}}')
+            # Send chat message
             self.ws.send(
                 f'5:4+::{{"name":"chat_postMessage","args":[{{"Class":"MessageInfo","ContainerId":"tag:nextthought.com,2011-10:stress.tester{self.user_id}-OID-{OID}","body":["locustTest{time.time()}"],"channel":"DEFAULT"}}]}}')
             time.sleep(30)
+
 
 class LocustForalpha_nextthought_com12_har_2480081456(HttpLocust):
     if LOCUST_MAJOR_VERSION >= 1:
